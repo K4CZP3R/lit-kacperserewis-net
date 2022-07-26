@@ -7,7 +7,7 @@ export class FooterElement extends LitElement {
     static override styles = css`
     
     .element {
-        width: 100vw;
+        /* width: 75vw; */
         padding: 10px
     }
     `;
@@ -18,9 +18,7 @@ export class FooterElement extends LitElement {
         return html`
 
         <div class="element">
-            <a>Created by</a>
-            <b>kacperserewis.net</b>
-        
+            <a>Made with lit!</a>
         </div>
         `;
     }
