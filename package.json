@@ -28,8 +28,16 @@
   "author": "Google LLC",
   "license": "BSD-3-Clause",
   "dependencies": {
+    "@lion/button": "^0.18.0",
+    "@lit-labs/motion": "^1.0.3",
+    "@reduxjs/toolkit": "^1.8.3",
     "@vaadin/router": "^1.7.4",
-    "lit": "^2.2.8"
+    "lit": "^2.2.8",
+    "nanoid": "^4.0.0",
+    "pwa-helpers": "^0.9.1",
+    "redux": "^4.2.0",
+    "redux-thunk": "^2.4.1",
+    "reselect": "^4.1.6"
   },
   "devDependencies": {
     "@custom-elements-manifest/analyzer": "^0.6.3",
