@@ -71,7 +71,18 @@ export class LandingElement extends connect(store)(LitElement) {
         z-index: -1;
         top: 10%;
         left: 35%;
+        width: 30%;
+        overflow: hidden;
+
+    }
+
+    @media (max-width: 1396px) {
+       blob-element {
+        top: 15%;
+        left: 40%;
         width: 40%;
+
+       }
     }
 
         /* Responsive */
@@ -84,8 +95,7 @@ export class LandingElement extends connect(store)(LitElement) {
 
     @media (max-width: 768px) {
         blob-element {
-
-        width: 70%;
+            visibility: hidden
         }
     }
     `;
@@ -134,7 +144,7 @@ export class LandingElement extends connect(store)(LitElement) {
         
         
                 <!-- <button-element path="/projects">Projects</button-element>
-                                                                                                                                                                                                                                                                <button-element path="/blog">Blog</button-element> -->
+                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                <button-element path="/blog">Blog</button-element> -->
         
                 <div class="socials">
                     ${this.socials.map((social) => {
