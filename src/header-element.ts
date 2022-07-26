@@ -1,27 +1,38 @@
-import { LitElement, html, css } from 'lit';
+import { LitElement, html, css, PropertyValueMap } from 'lit';
 import { customElement, property } from 'lit/decorators.js';
+import { connect } from 'pwa-helpers';
 
+
+import "./button-element"
+import { store } from './redux/store';
 
 @customElement('header-element')
-export class HeaderElement extends LitElement {
+export class HeaderElement extends connect(store)(LitElement) {
     static override styles = css`
     
     .element {
-        /* width: 50vw; */
-        padding: 10px
+        padding: 15px
     }
     `;
 
     @property({ type: String })
-    testProperty = '';
+    currentLocation: string = "/";
+
+    protected override firstUpdated(_changedProperties: PropertyValueMap<any> | Map<PropertyKey, unknown>): void {
+        super.firstUpdated(_changedProperties);
+    }
+
+    override stateChanged(_state: { projectsReducer: { projects: any[]; }; blogReducer: { posts: any[]; }; socialsReducer: { socials: any; }; locationReducer: { location: any; }; }): void {
+        super.stateChanged(_state);
+        this.currentLocation = _state.locationReducer.location;
+    }
+
+
     override render() {
         return html`
         
         <div class="element">
-            <a>Icoontje</a>
-            <a>kacperserewis.net</a>
-            <a href="/">Home</a>
-        
+            <b>kacperserewis.net</b>
         </div>
         
         `;
