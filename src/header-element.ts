@@ -7,7 +7,7 @@ export class HeaderElement extends LitElement {
     static override styles = css`
     
     .element {
-        width: 100vw;
+        /* width: 50vw; */
         padding: 10px
     }
     `;
