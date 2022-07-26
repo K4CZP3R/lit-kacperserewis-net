@@ -151,7 +151,7 @@ export class LandingElement extends connect(store)(LitElement) {
         
             </div>
         
-            <blob3d-element blobSpeed="0.0003" lightColor="0xf6f6f2" size="300" blobColor="0xc2edce" ></blob3d-element>
+            <blob3d-element blobSpeed="0.0003" lightColor="0xf6f6f2" size="300" blobColor="0xc2edce" blobSpikeness="1.75" ></blob3d-element>
         </div>
         
         `;
