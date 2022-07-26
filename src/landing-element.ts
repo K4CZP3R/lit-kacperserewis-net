@@ -6,18 +6,15 @@ import "./button-element"
 import { fetchSocials } from './redux/reducers/socials.reducer';
 import { store } from './redux/store';
 
+import "./blob-element"
+
+
 @customElement('landing-element')
 export class LandingElement extends connect(store)(LitElement) {
     static override styles = css`
     
-    .avatar {
-        /* Round */
-        border-radius: 50%;
-    }
+
     
-    .element {
-        width: 75vw;
-    }
     
     .layout {
         display: flex;
@@ -26,14 +23,8 @@ export class LandingElement extends connect(store)(LitElement) {
         gap: 50px;
     }
     
-    .box {
-      position: absolute;
-      width: 100px;
-      height: 100px;
-      background: steelblue;
-      top: 100px;
-      border-radius: 50%;
-    }
+
+
 
     @keyframes fadeIn {
   0% { opacity: 0; }
@@ -44,6 +35,59 @@ export class LandingElement extends connect(store)(LitElement) {
   animation: fadeIn 2s;
 }
 
+
+
+    .name-text {
+        font-size: 6em;
+        font-weight: bold;
+    }
+
+    .function-text {
+        font-size: 3em;
+        /* font-weight: bold; */
+    }
+
+    .current-text {
+        font-style: italic;
+    }
+
+    .socials {
+        display: flex;
+        gap: 10px;
+        margin-top: 2%;
+        padding-left: 5%;
+        min-height: 40px;
+    }
+    .socials > a {
+        text-decoration: none;
+        color: var(--color-primary);
+        text-decoration: underline;
+    }
+
+
+
+    blob-element {
+        position: absolute;
+        z-index: -1;
+        top: 10%;
+        left: 35%;
+        width: 40%;
+    }
+
+        /* Responsive */
+        @media (max-width: 1072px) {
+       blob-element {
+        width: 60%;
+
+       }
+    }
+
+    @media (max-width: 768px) {
+        blob-element {
+
+        width: 70%;
+        }
+    }
     `;
 
 
@@ -51,7 +95,7 @@ export class LandingElement extends connect(store)(LitElement) {
     shifted = false;
 
     @property({ type: Array })
-    socials: any[] = [];
+    socials: { name: string; url: string }[] = [];
 
     protected override firstUpdated(_changedProperties: PropertyValueMap<any> | Map<PropertyKey, unknown>): void {
         super.firstUpdated(_changedProperties)
@@ -59,6 +103,8 @@ export class LandingElement extends connect(store)(LitElement) {
 
 
         store.dispatch(fetchSocials());
+
+
     }
 
     override stateChanged(_state: { projectsReducer: { projects: any[]; }; blogReducer: { posts: any[]; }; socialsReducer: { socials: any; }; }): void {
@@ -76,22 +122,33 @@ export class LandingElement extends connect(store)(LitElement) {
     override render() {
         return html`
         <div class="element layout">
-            <img width=" 30%" height="30%" class="avatar"
-                src="https://strapi.kacperserewis.net/uploads/avatar_7651e491b0.webp?updated_at=2022-02-02T22:13:34.574Z">
-            <div>
-                <h1>Hi!</h1>
-                <p>My name is Kacper</p>
         
-                <div style="min-height: 40px">
         
-                    ${this.socials.map(social => html`
-                    <button-element class="fade-in-text">${social.name}</button-element>`)}
+            <div style="display: flex; flex-direction: column;" class="fade-in-text">
+        
+                <blob-element></blob-element>
+        
+                <a class="name-text">Kacper Serewiś</a>
+                <a class="function-text">Junior software developer</a>
+                <a class="current-text">Fontys student, working part-time as developer at Stofloos..</a>
+        
+        
+                <!-- <button-element path="/projects">Projects</button-element>
+                                                                                                                                                                                                                                                                <button-element path="/blog">Blog</button-element> -->
+        
+                <div class="socials">
+                    ${this.socials.map((social) => {
+        return html`<a href="${social.url}">${social.name}</a>`
+        })}
         
                 </div>
         
         
+        
             </div>
         
+        
+        </div>
         </div>
         
         `;
