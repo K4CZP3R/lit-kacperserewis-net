@@ -27,20 +27,45 @@ export class AppElement extends LitElement {
 
     }
 
+    .main-sections > * {
+        /* max-width: 1072px; */
+        width: 65vw;
+    }
+
+    /* Responsive */
+    @media (max-width: 1072px) {
+        .main-sections > * {
+            width: 75vw;
+        }
+    }
+
+    @media (max-width: 768px) {
+        .main-sections > * {
+            width: 85vw;
+        }
+    }
+
     .header {
         border: 1px solid black;
+        width: 100vw;
 
     }
 
     .content {
         border: 1px solid black;
 
+
+
     }
 
     .footer {
         border: 1px solid black;
+        width: 100vw;
 
     }
+
+
+    /* 388087, 6fb3b8, badfe7, c2edce, f6f6f2 */
     
     `;
 
@@ -66,10 +91,13 @@ export class AppElement extends LitElement {
 
     override render() {
         return html`
+       
         <div class="main-sections">
+        
             <header-element class="header"> </header-element>
             <div class="content" id="outlet"></div>
             <footer-element class="footer"></footer-element>
+        </div>
         </div>
         `;
     }
