@@ -7,11 +7,14 @@ import "./footer-element"
 import "./notfound-element"
 
 import { Router } from '@vaadin/router';
+import { connect } from 'pwa-helpers';
+import { store } from './redux/store';
+import { changeLocation } from './redux/reducers/location.reducer';
 
 
 
 @customElement('app-element')
-export class AppElement extends LitElement {
+export class AppElement extends connect(store)(LitElement) {
 
     @property({ type: Object })
     router?: Router;
@@ -46,22 +49,14 @@ export class AppElement extends LitElement {
     }
 
     .header {
-        border: 1px solid black;
+        /* border: 1px solid black; */
         width: 100vw;
-
     }
 
-    .content {
-        border: 1px solid black;
-
-
-
-    }
 
     .footer {
-        border: 1px solid black;
+        /* border: 1px solid black; */
         width: 100vw;
-
     }
 
 
@@ -72,30 +67,26 @@ export class AppElement extends LitElement {
     protected override firstUpdated(_changedProperties: PropertyValueMap<any> | Map<PropertyKey, unknown>): void {
         super.firstUpdated(_changedProperties)
         this.router = new Router(this.shadowRoot!.getElementById('outlet'));
+
         this.router.setRoutes([
-            { path: '/', component: 'landing-element', action: async () => { await import("./landing-element") } },
-            { path: '/blog', component: 'blog-element', action: async () => { await import("./blog-element") } },
-            { path: '(.*)', component: 'notfound-element' }
+            { path: '/', component: 'landing-element', action: async () => { store.dispatch(changeLocation("/")); await import("./landing-element") } },
+            { path: '/blog', component: 'blog-element', action: async () => { store.dispatch(changeLocation("/blog")); await import("./blog-element") } },
+            { path: '(.*)', component: 'notfound-element', action: async () => { store.dispatch(changeLocation(".*")) } }
         ]);
+
+
     }
 
     override connectedCallback() {
         super.connectedCallback();
-
-
-
-
-
-
     }
 
     override render() {
         return html`
        
         <div class="main-sections">
-        
             <header-element class="header"> </header-element>
-            <div class="content" id="outlet"></div>
+            <div id="outlet"></div>
             <footer-element class="footer"></footer-element>
         </div>
         </div>

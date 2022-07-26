@@ -12,28 +12,16 @@ import "./blob-element"
 @customElement('landing-element')
 export class LandingElement extends connect(store)(LitElement) {
     static override styles = css`
-    
 
-    
-    
-    .layout {
+
+    .element {
         display: flex;
-        justify-content: flex-start;
         align-items: center;
-        gap: 50px;
+        justify-content: space-around;
     }
     
 
 
-
-    @keyframes fadeIn {
-  0% { opacity: 0; }
-  100% { opacity: 1; }
-}
-
-.fade-in-text {
-  animation: fadeIn 2s;
-}
 
 
 
@@ -44,7 +32,6 @@ export class LandingElement extends connect(store)(LitElement) {
 
     .function-text {
         font-size: 3em;
-        /* font-weight: bold; */
     }
 
     .current-text {
@@ -54,8 +41,8 @@ export class LandingElement extends connect(store)(LitElement) {
     .socials {
         display: flex;
         gap: 10px;
-        margin-top: 2%;
-        padding-left: 5%;
+        margin-top: 3%;
+        padding-left: 1%;
         min-height: 40px;
     }
     .socials > a {
@@ -65,39 +52,41 @@ export class LandingElement extends connect(store)(LitElement) {
     }
 
 
-
-    blob-element {
-        position: absolute;
-        z-index: -1;
-        top: 10%;
-        left: 35%;
-        width: 30%;
-        overflow: hidden;
-
-    }
-
-    @media (max-width: 1396px) {
-       blob-element {
-        top: 15%;
-        left: 40%;
-        width: 40%;
-
-       }
-    }
-
-        /* Responsive */
-        @media (max-width: 1072px) {
-       blob-element {
-        width: 60%;
-
-       }
-    }
-
-    @media (max-width: 768px) {
-        blob-element {
-            visibility: hidden
+    /* responsive */
+    @media (max-width: 1200px) {
+        .name-text {
+            font-size: 4em;
+        }
+        .function-text {
+            font-size: 2em;
         }
     }
+    @media (max-width: 768px) {
+        .name-text {
+            font-size: 3em;
+        }
+        .function-text {
+            font-size: 1.5em;
+        }
+        .current-text {
+            font-size: 1em;
+        }
+    }
+    @media (max-width: 480px) {
+        blob-element {
+            visibility: hidden;
+        }
+        .name-text {
+            font-size: 3em;
+        }
+        .function-text {
+            font-size: 2em;
+        }
+        .current-text {
+            font-size: 1em;
+        }
+    }
+
     `;
 
 
@@ -117,7 +106,7 @@ export class LandingElement extends connect(store)(LitElement) {
 
     }
 
-    override stateChanged(_state: { projectsReducer: { projects: any[]; }; blogReducer: { posts: any[]; }; socialsReducer: { socials: any; }; }): void {
+    override stateChanged(_state: { projectsReducer: { projects: any[]; }; locationReducer: {location: string}; blogReducer: { posts: any[]; }; socialsReducer: { socials: any; }; }): void {
         super.stateChanged(_state);
 
 
@@ -131,34 +120,36 @@ export class LandingElement extends connect(store)(LitElement) {
     testProperty = '';
     override render() {
         return html`
-        <div class="element layout">
+
+        <div class="element">
         
-        
-            <div style="display: flex; flex-direction: column;" class="fade-in-text">
-        
-                <blob-element></blob-element>
-        
+            <div style="display: flex; flex-direction: column;">
                 <a class="name-text">Kacper Serewiś</a>
                 <a class="function-text">Junior software developer</a>
                 <a class="current-text">Fontys student, working part-time as developer at Stofloos..</a>
         
         
                 <!-- <button-element path="/projects">Projects</button-element>
-                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                <button-element path="/blog">Blog</button-element> -->
+                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                    <button-element path="/blog">Blog</button-element> -->
         
                 <div class="socials">
+                ${["Projects", "Blog"].map((link:any) => {
+                        return html`<a href="${link}">${link}</a>`
+                    })}
                     ${this.socials.map((social) => {
-        return html`<a href="${social.url}">${social.name}</a>`
-        })}
+                        return html`<a href="${social.url}">${social.name}</a>`
+                    })}
+
+
         
                 </div>
-        
-        
-        
+
+
+ 
             </div>
+
+            <blob-element></blob-element>
         
-        
-        </div>
         </div>
         
         `;
