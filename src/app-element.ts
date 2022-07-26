@@ -4,6 +4,7 @@ import { customElement, property } from 'lit/decorators.js';
 
 import "./header-element"
 import "./footer-element"
+import "./notfound-element"
 
 import { Router } from '@vaadin/router';
 
@@ -21,10 +22,8 @@ export class AppElement extends LitElement {
         flex-direction: column;
         align-items: center;
         justify-content: space-between;
-
         height: 100vh;
 
-        background-color: beige;
 
     }
 
@@ -49,9 +48,9 @@ export class AppElement extends LitElement {
         super.firstUpdated(_changedProperties)
         this.router = new Router(this.shadowRoot!.getElementById('outlet'));
         this.router.setRoutes([
-            { path: '/', component: 'header-element' },
-            { path: '/header', component: 'header-element' },
-            { path: '/footer', component: 'footer-element' },
+            { path: '/', component: 'landing-element', action: async () => { await import("./landing-element") } },
+            { path: '/blog', component: 'blog-element', action: async () => { await import("./blog-element") } },
+            { path: '(.*)', component: 'notfound-element' }
         ]);
     }
 
@@ -69,16 +68,9 @@ export class AppElement extends LitElement {
         return html`
         <div class="main-sections">
             <header-element class="header"> </header-element>
-            <a href="/header">Header go</a>
-            <a href="/footer">Footer go</a>
-            <button @click="${() => Router.go("/header")}">Header go</button> <div id="outlet" class="content">
+            <div class="content" id="outlet"></div>
+            <footer-element class="footer"></footer-element>
         </div>
-        
-        
-        <footer-element class="footer">Footer</footer-element>
-        </div>v>
-        </div>
-        
         `;
     }
 }

@@ -20,6 +20,7 @@ export class HeaderElement extends LitElement {
         <div class="element">
             <a>Icoontje</a>
             <a>kacperserewis.net</a>
+            <a href="/">Home</a>
         
         </div>
         
