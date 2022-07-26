@@ -62,6 +62,10 @@ export class LandingElement extends connect(store)(LitElement) {
         }
     }
     @media (max-width: 768px) {
+        blob-element {
+            position: absolute;
+            z-index: -1;
+        }
         .name-text {
             font-size: 3em;
         }
@@ -73,9 +77,6 @@ export class LandingElement extends connect(store)(LitElement) {
         }
     }
     @media (max-width: 480px) {
-        blob-element {
-            visibility: hidden;
-        }
         .name-text {
             font-size: 3em;
         }
@@ -106,7 +107,7 @@ export class LandingElement extends connect(store)(LitElement) {
 
     }
 
-    override stateChanged(_state: { projectsReducer: { projects: any[]; }; locationReducer: {location: string}; blogReducer: { posts: any[]; }; socialsReducer: { socials: any; }; }): void {
+    override stateChanged(_state: { projectsReducer: { projects: any[]; }; locationReducer: { location: string }; blogReducer: { posts: any[]; }; socialsReducer: { socials: any; }; }): void {
         super.stateChanged(_state);
 
 
@@ -129,25 +130,23 @@ export class LandingElement extends connect(store)(LitElement) {
                 <a class="current-text">Fontys student, working part-time as developer at Stofloos..</a>
         
         
-                <!-- <button-element path="/projects">Projects</button-element>
-                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                    <button-element path="/blog">Blog</button-element> -->
         
                 <div class="socials">
-                ${["Projects", "Blog"].map((link:any) => {
+                    ${["Projects", "Blog"].map((link: any) => {
                         return html`<a href="${link}">${link}</a>`
                     })}
                     ${this.socials.map((social) => {
                         return html`<a href="${social.url}">${social.name}</a>`
                     })}
-
-
+        
+        
         
                 </div>
-
-
- 
+        
+        
+        
             </div>
-
+        
             <blob-element></blob-element>
         
         </div>
