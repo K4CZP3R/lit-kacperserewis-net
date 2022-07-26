@@ -17,7 +17,8 @@
     "analyze": "cem analyze --litelement --globs \"src/**/*.ts\"",
     "analyze:watch": "cem analyze --litelement --globs \"src/**/*.ts\" --watch",
     "serve": "wds --watch --app-index index.html",
-    "serve:prod": "MODE=prod npm run serve"
+    "serve:prod": "MODE=prod npm run serve",
+    "deploy": "rollup -c"
   },
   "keywords": [
     "web-components",
