@@ -28,7 +28,13 @@ export class Blob3dElement extends LitElement {
     blobColor: number = 0xff0000;
 
     @property({ type: Number })
+    blobColorEmission: number = 0.75;
+
+    @property({ type: Number })
     lightColor: number = 0x00ff00;
+
+    @property({ type: Number })
+    lightColorEmission: number = 0.25;
 
     @property({ type: Number })
     blobSpeed: number = 0.003;
@@ -38,6 +44,9 @@ export class Blob3dElement extends LitElement {
 
     @property({ type: Number })
     size: number = 300;
+
+    @property({ type: Boolean })
+    useSimpleMaterial = false;
 
     protected override firstUpdated(_changedProperties: PropertyValueMap<any> | Map<PropertyKey, unknown>): void {
         super.firstUpdated(_changedProperties);
@@ -51,6 +60,16 @@ export class Blob3dElement extends LitElement {
 
     protected override updated(_changedProperties: PropertyValueMap<any> | Map<PropertyKey, unknown>): void {
         super.updated(_changedProperties);
+
+        if (_changedProperties.has("useSimpleMaterial")) {
+            this.blob!.material = this.useSimpleMaterial ? new THREE.MeshBasicMaterial({
+                color: this.blobColor,
+            }) : new THREE.MeshPhongMaterial({
+                emissive: this.blobColor,
+                emissiveIntensity: this.blobColorEmission,
+                shininess: 0,
+            });
+        }
     }
 
 
@@ -71,7 +90,7 @@ export class Blob3dElement extends LitElement {
         this.camera!.position.z = 5;
 
 
-        var light = new THREE.DirectionalLight(this.blobColor, 0.25);
+        var light = new THREE.DirectionalLight(this.lightColor, this.lightColorEmission);
         light.position.set(0, 0, 100);
         this.scene.add(light);
         // var light2 = new THREE.DirectionalLight(this.blobColor, 0.5);
@@ -84,13 +103,10 @@ export class Blob3dElement extends LitElement {
         blobGeometry.setAttribute("basePosition", new THREE.BufferAttribute().copy(blobGeometry.attributes.position));
         var blobMaterial = new THREE.MeshPhongMaterial({
             emissive: this.blobColor,
-            emissiveIntensity: 0.75,
+            emissiveIntensity: this.blobColorEmission,
             shininess: 0,
         });
 
-        // blobMaterial = new THREE.MeshBasicMaterial({
-        //     color: this.blobColor,
-        // });
 
 
         this.blob = new THREE.Mesh(blobGeometry, blobMaterial);

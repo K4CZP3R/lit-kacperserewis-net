@@ -8,38 +8,40 @@ import { store } from './redux/store';
 
 import "./blob-element"
 import "./blob3d-element"
+import { appear, slideUp } from './styles/animations.style';
+import { textStyle } from './styles/text.style';
+import {animate} from '@lit-labs/motion';
 
 
 @customElement('landing-element')
 export class LandingElement extends connect(store)(LitElement) {
+    @property({type: Boolean})
+    simpleBlob =false;
 
 
-    static override styles = css`
+    @property({type: Boolean})
+    changing = false;
 
 
+    static override styles = [textStyle, slideUp, appear ,css`
     .element {
         display: flex;
         align-items: center;
         justify-content: space-around;
+        animation: slideUp 1s ease;
     }
+
+    blob3d-element {
+        animation: appear 1s ease;
+    }
+
+    .hide {
+        opacity: 0.5;
+    }
+
+
     
 
-
-
-
-
-    .name-text {
-        font-size: 6em;
-        font-weight: bold;
-    }
-
-    .function-text {
-        font-size: 3em;
-    }
-
-    .current-text {
-        font-style: italic;
-    }
 
     .socials {
         display: flex;
@@ -47,6 +49,7 @@ export class LandingElement extends connect(store)(LitElement) {
         margin-top: 3%;
         padding-left: 1%;
         min-height: 40px;
+        animation: appear 1s ease;
     }
     .socials > a {
         text-decoration: none;
@@ -55,43 +58,17 @@ export class LandingElement extends connect(store)(LitElement) {
     }
 
 
-    /* responsive */
-    @media (max-width: 1200px) {
-        .name-text {
-            font-size: 4em;
-        }
-        .function-text {
-            font-size: 2em;
-        }
-    }
+
     @media (max-width: 768px) {
         blob3d-element {
             position: absolute;
             z-index: -1;
         }
-        .name-text {
-            font-size: 3em;
-        }
-        .function-text {
-            font-size: 1.5em;
-        }
-        .current-text {
-            font-size: 1em;
-        }
-    }
-    @media (max-width: 480px) {
-        .name-text {
-            font-size: 3em;
-        }
-        .function-text {
-            font-size: 2em;
-        }
-        .current-text {
-            font-size: 1em;
-        }
+     
     }
 
-    `;
+
+    `];
 
 
     @property({ type: Boolean })
@@ -120,6 +97,16 @@ export class LandingElement extends connect(store)(LitElement) {
         console.log(_state);
     }
 
+    blobClick() {
+        this.changing = true;
+        
+        setTimeout(() => {
+            this.simpleBlob = !this.simpleBlob;
+            this.changing = false;
+        },500)
+
+    }
+
 
     @property({ type: String })
     testProperty = '';
@@ -129,9 +116,9 @@ export class LandingElement extends connect(store)(LitElement) {
         <div class="element">
         
             <div style="display: flex; flex-direction: column;">
-                <a class="name-text">Kacper Serewiś</a>
-                <a class="function-text">Junior software developer</a>
-                <a class="current-text">Fontys student, working part-time as developer at Stofloos..</a>
+                <a class="main-text">Kacper Serewiś</a>
+                <a class="sub-text">Junior software developer</a>
+                <a class="bot-text">Fontys student, working part-time as developer at Stofloos..</a>
         
         
         
@@ -151,7 +138,7 @@ export class LandingElement extends connect(store)(LitElement) {
         
             </div>
         
-            <blob3d-element blobSpeed="0.0003" lightColor="0xf6f6f2" size="300" blobColor="0xc2edce" blobSpikeness="1.75" ></blob3d-element>
+            <blob3d-element .useSimpleMaterial="${this.simpleBlob}" class="${this.changing ? 'hide' : ''}" ${animate()} @click="${(_e: any) => this.blobClick()}" blobSpeed="0.0003" lightColor="0xf6f6f2" size="300" blobColor="0xc2edce" blobSpikeness="1.75" ></blob3d-element>
         </div>
         
         `;
