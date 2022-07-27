@@ -111,7 +111,7 @@ export class LandingElement extends connect(store)(LitElement) {
 
     }
 
-    override stateChanged(_state: { projectsReducer: { projects: any[]; }; locationReducer: { location: string }; blogReducer: { posts: any[]; }; socialsReducer: { socials: any; }; }): void {
+    override stateChanged(_state: any): void {
         super.stateChanged(_state);
 
 

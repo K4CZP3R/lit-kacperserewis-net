@@ -22,7 +22,7 @@ export class HeaderElement extends connect(store)(LitElement) {
         super.firstUpdated(_changedProperties);
     }
 
-    override stateChanged(_state: { projectsReducer: { projects: any[]; }; blogReducer: { posts: any[]; }; socialsReducer: { socials: any; }; locationReducer: { location: any; }; }): void {
+    override stateChanged(_state: any): void {
         super.stateChanged(_state);
         this.currentLocation = _state.locationReducer.location;
     }
