@@ -9,7 +9,7 @@ import "./notfound-element"
 import { Router } from '@vaadin/router';
 import { connect } from 'pwa-helpers';
 import { store } from './redux/store';
-import { changeLocation } from './redux/reducers/location.reducer';
+import { changeLocation, setMeta } from './redux/reducers/location.reducer';
 
 
 
@@ -69,12 +69,25 @@ export class AppElement extends connect(store)(LitElement) {
         this.router = new Router(this.shadowRoot!.getElementById('outlet'));
 
         this.router.setRoutes([
-            { path: '/', component: 'landing-element', action: async () => { store.dispatch(changeLocation("/")); await import("./landing-element") } },
-            { path: '/blog', component: 'blog-element', action: async () => { store.dispatch(changeLocation("/blog")); await import("./blog-element") } },
-            { path: '(.*)', component: 'notfound-element', action: async () => { store.dispatch(changeLocation(".*")) } }
+            { path: '/', component: 'landing-element', action: async () => { this.onLocationChanged("/", "kacperserewis.net", "My personal website"); await import("./landing-element") } },
+            { path: '/blog', component: 'blog-element', action: async () => { this.onLocationChanged("/blog", "blog - kacperserewis.net", "My blog with things I made."); await import("./blog-element") } },
+            { path: '(.*)', component: 'notfound-element', action: async () => { this.onLocationChanged(".*", "fallback - kacperserewis.net", "Fallback page for unknown paths"); store.dispatch(changeLocation(".*")) } }
         ]);
 
 
+    }
+
+    private onLocationChanged(newLocation: string, title: string, description: string) {
+        store.dispatch(changeLocation(newLocation));
+        store.dispatch(setMeta(title, description));
+    }
+
+    override stateChanged(_state: { projectsReducer: { projects: any[]; }; blogReducer: { posts: any[]; }; socialsReducer: { socials: any; }; locationReducer: { location: string; title: string, description: string } | { title: any; description: any; location: string; }; }): void {
+        super.stateChanged(_state);
+
+        document.title = _state.locationReducer.title;
+        document.querySelector('meta[name="description"]')?.setAttribute('content', _state.locationReducer.description);
+        document.querySelector('meta[name="og:title"]')?.setAttribute('content', _state.locationReducer.description);
     }
 
     override connectedCallback() {
