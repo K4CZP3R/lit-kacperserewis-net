@@ -78,7 +78,7 @@ export class ProjectsElement extends connect(store)(LitElement) {
 
 
 
-                <div>
+                <div style="display: flex; gap: 5px;">
 
                     ${repeat(project.buttons, (button: IButtonModel) => html`
 
