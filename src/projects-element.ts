@@ -30,10 +30,10 @@ export class ProjectsElement extends connect(store)(LitElement) {
     .list {
         display: flex;
         flex-direction: column;
-        flex-wrap: wrap;
+        /* flex-wrap: wrap; */
         justify-content: center;
         gap: 25px;
-        max-width: 100%;
+        max-width: 95vw;
         animation: slideUp 1s ease;
 
     }
