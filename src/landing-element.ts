@@ -7,10 +7,13 @@ import { fetchSocials } from './redux/reducers/socials.reducer';
 import { store } from './redux/store';
 
 import "./blob-element"
+import "./blob3d-element"
 
 
 @customElement('landing-element')
 export class LandingElement extends connect(store)(LitElement) {
+
+
     static override styles = css`
 
 
@@ -62,7 +65,7 @@ export class LandingElement extends connect(store)(LitElement) {
         }
     }
     @media (max-width: 768px) {
-        blob-element {
+        blob3d-element {
             position: absolute;
             z-index: -1;
         }
@@ -103,6 +106,7 @@ export class LandingElement extends connect(store)(LitElement) {
 
 
         store.dispatch(fetchSocials());
+
 
 
     }
@@ -147,8 +151,7 @@ export class LandingElement extends connect(store)(LitElement) {
         
             </div>
         
-            <blob-element></blob-element>
-        
+            <blob3d-element blobSpeed="0.0003" lightColor="0xf6f6f2" size="300" blobColor="0xc2edce" blobSpikeness="1.75" ></blob3d-element>
         </div>
         
         `;
