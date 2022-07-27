@@ -10,6 +10,7 @@ import { Router } from '@vaadin/router';
 import { connect } from 'pwa-helpers';
 import { store } from './redux/store';
 import { changeLocation, setMeta } from './redux/reducers/location.reducer';
+import { IReduxState } from './models/redux-state.model';
 
 
 
@@ -31,8 +32,9 @@ export class AppElement extends connect(store)(LitElement) {
     }
 
     .main-sections > * {
-        /* max-width: 1072px; */
+        max-width: 100%;
         width: 65vw;
+        
     }
 
     /* Responsive */
@@ -57,6 +59,7 @@ export class AppElement extends connect(store)(LitElement) {
     .footer {
         /* border: 1px solid black; */
         width: 100vw;
+
     }
 
 
@@ -71,7 +74,7 @@ export class AppElement extends connect(store)(LitElement) {
         this.router.setRoutes([
             { path: '/', component: 'landing-element', action: async () => { this.onLocationChanged("/", "kacperserewis.net", "My personal website"); await import("./landing-element") } },
             { path: '/blog', component: 'blog-element', action: async () => { this.onLocationChanged("/blog", "blog - kacperserewis.net", "My blog with things I made."); await import("./blog-element") } },
-            { path: '(.*)', component: 'notfound-element', action: async () => { this.onLocationChanged(".*", "fallback - kacperserewis.net", "Fallback page for unknown paths"); store.dispatch(changeLocation(".*")) } }
+            { path: '/projects', component: 'projects-element', action: async () => { this.onLocationChanged("/projects", "projects - kacperserewis.net", "My projects."); await import("./projects-element") } }, { path: '(.*)', component: 'notfound-element', action: async () => { this.onLocationChanged(".*", "fallback - kacperserewis.net", "Fallback page for unknown paths"); store.dispatch(changeLocation(".*")) } }
         ]);
 
 
@@ -82,12 +85,16 @@ export class AppElement extends connect(store)(LitElement) {
         store.dispatch(setMeta(title, description));
     }
 
-    override stateChanged(_state: { projectsReducer: { projects: any[]; }; blogReducer: { posts: any[]; }; socialsReducer: { socials: any; }; locationReducer: { location: string; title: string, description: string } | { title: any; description: any; location: string; }; }): void {
+
+    override stateChanged(_state: IReduxState): void {
+
         super.stateChanged(_state);
 
         document.title = _state.locationReducer.title;
         document.querySelector('meta[name="description"]')?.setAttribute('content', _state.locationReducer.description);
         document.querySelector('meta[name="og:title"]')?.setAttribute('content', _state.locationReducer.description);
+
+
     }
 
     override connectedCallback() {

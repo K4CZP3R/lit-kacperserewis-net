@@ -27,7 +27,7 @@ export const locationReducer = (state = INITIAL_STATE, action: any) => {
         case CHANGE_LOCATION:
             return {
                 ...state,
-                location: action.newLocation
+                location: action.newLocation,
             }
         case SET_META:
             return {

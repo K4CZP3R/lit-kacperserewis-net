@@ -11,6 +11,10 @@ import "./blob3d-element"
 import { appear, slideUp } from './styles/animations.style';
 import { textStyle } from './styles/text.style';
 import {animate} from '@lit-labs/motion';
+import { IReduxState } from './models/redux-state.model';
+import { ISocialModel } from './models/social.model';
+import { ILandingPageModel } from './models/landing-page.model';
+import { fetchLandingPageCms } from './redux/reducers/landing-page.reducer';
 
 
 @customElement('landing-element')
@@ -20,7 +24,10 @@ export class LandingElement extends connect(store)(LitElement) {
 
 
     @property({type: Boolean})
-    changing = false;
+    changingCms = false;
+
+    @property({type: Boolean})
+    changingBlob = false;
 
 
     static override styles = [textStyle, slideUp, appear ,css`
@@ -35,7 +42,12 @@ export class LandingElement extends connect(store)(LitElement) {
         animation: appear 1s ease;
     }
 
-    .hide {
+
+    .hide-cms {
+        opacity: 0.75;
+    }
+
+    .hide-blob {
         opacity: 0.5;
     }
 
@@ -71,38 +83,61 @@ export class LandingElement extends connect(store)(LitElement) {
     `];
 
 
-    @property({ type: Boolean })
-    shifted = false;
 
     @property({ type: Array })
-    socials: { name: string; url: string }[] = [];
+    socials: ISocialModel[] = [];
+
+    @property({type: Object})
+    landingPage?: ILandingPageModel;
 
     protected override firstUpdated(_changedProperties: PropertyValueMap<any> | Map<PropertyKey, unknown>): void {
         super.firstUpdated(_changedProperties)
-        this.shifted = true;
 
 
         store.dispatch(fetchSocials());
+        store.dispatch(fetchLandingPageCms());
+
+
 
 
 
     }
 
-    override stateChanged(_state: any): void {
+    override stateChanged(_state: IReduxState): void {
         super.stateChanged(_state);
+        if(_state.socialsReducer.error) {
+            console.log("Socials fetch failed, trying again!", _state.socialsReducer)
+            setTimeout(() => store.dispatch(fetchSocials()), 1000);
+        } else {
+            this.socials = _state.socialsReducer.socials;
+        }
 
+        if(_state.landingPageReducer.error) {
+            console.log("Socials fetch failed, trying again!", _state.socialsReducer)
+            setTimeout(() => store.dispatch(fetchLandingPageCms()), 1000);
+        }
+        else if(_state.landingPageReducer.default){
+            this.landingPage = _state.landingPageReducer.landingPage;
+        } else {
 
-        this.socials = _state.socialsReducer.socials;
+            this.changingCms = true;
+            setTimeout(() => {
+                this.landingPage = _state.landingPageReducer.landingPage;
+                this.changingCms = false;
+            },250)
 
-        console.log(_state);
+            
+        }
+        
+
     }
 
     blobClick() {
-        this.changing = true;
+        this.changingBlob = true;
         
         setTimeout(() => {
             this.simpleBlob = !this.simpleBlob;
-            this.changing = false;
+            this.changingBlob = false;
         },500)
 
     }
@@ -116,9 +151,10 @@ export class LandingElement extends connect(store)(LitElement) {
         <div class="element">
         
             <div style="display: flex; flex-direction: column;">
-                <a class="main-text">Kacper Serewiś</a>
-                <a class="sub-text">Junior software developer</a>
-                <a class="bot-text">Fontys student, working part-time as developer at Stofloos..</a>
+            
+                <a class="main-text ${this.changingCms ? 'hide-cms' : ''}" ${animate()}>${this.landingPage?.mainText}</a>
+                <a class="sub-text ${this.changingCms ? 'hide-cms' : ''}" ${animate()}">${this.landingPage?.subText}</a>
+                <a class="bot-text ${this.changingCms ? 'hide-cms' : ''}" ${animate()}">${this.landingPage?.botText}</a>
         
         
         
@@ -138,7 +174,7 @@ export class LandingElement extends connect(store)(LitElement) {
         
             </div>
         
-            <blob3d-element .useSimpleMaterial="${this.simpleBlob}" class="${this.changing ? 'hide' : ''}" ${animate()} @click="${(_e: any) => this.blobClick()}" blobSpeed="0.0003" lightColor="0xf6f6f2" size="300" blobColor="0xc2edce" blobSpikeness="1.75" ></blob3d-element>
+            <blob3d-element .useSimpleMaterial="${this.simpleBlob}" class="${this.changingBlob ? 'hide-blob' : ''}" ${animate()} @click="${(_e: any) => this.blobClick()}" blobSpeed="0.0003" lightColor="0xf6f6f2" size="300" blobColor="0xc2edce" blobSpikeness="1.75" ></blob3d-element>
         </div>
         
         `;
