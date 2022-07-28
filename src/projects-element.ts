@@ -1,6 +1,6 @@
 import { LitElement, html, css, PropertyValueMap } from 'lit';
 import { customElement, property } from 'lit/decorators.js';
-import { slideUp } from './styles/animations.style';
+import { appear, appearSlideUp, slideUp } from './styles/animations.style';
 import { textStyle } from './styles/text.style';
 
 import "./card.element"
@@ -16,13 +16,14 @@ import { IButtonModel } from './models/button.model';
 
 @customElement('projects-element')
 export class ProjectsElement extends connect(store)(LitElement) {
-    static override styles = [textStyle, slideUp, css`    
+    static override styles = [textStyle, appearSlideUp, css`    
     .element {
         display: flex;
         align-items: center;
         flex-direction: column;
         gap: 50px;
         justify-content: space-around;
+        animation: appearSlideUp 1s ease
 
 
     }
@@ -34,9 +35,11 @@ export class ProjectsElement extends connect(store)(LitElement) {
         justify-content: center;
         gap: 25px;
         max-width: 95vw;
-        animation: slideUp 1s ease;
+        /* animation: slideUp 1s ease; */
 
     }
+
+
 
 
     `];
@@ -63,8 +66,12 @@ export class ProjectsElement extends connect(store)(LitElement) {
     }
 
     override render() {
+        if (this.projects.length === 0) {
+            return html``
+        }
         return html`<div class="element">
     <a class="main-text">Projects</a>
+
     <div class="list">
 
         ${repeat(this.projects, (project: IProjectModel) => html`

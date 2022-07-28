@@ -23,3 +23,16 @@ export const appear = css`
         }
     }
 `
+
+export const appearSlideUp = css`
+    @keyframes appearSlideUp {
+        0% {
+            opacity: 0;
+                transform: translateY(250px);
+            }
+            100% {
+                opacity: 1;
+                transform: translateY(0px);
+            }
+    }
+`
