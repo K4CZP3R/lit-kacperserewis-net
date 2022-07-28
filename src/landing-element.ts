@@ -8,7 +8,7 @@ import { store } from './redux/store';
 
 import "./blob-element"
 import "./blob3d-element"
-import { appear, slideUp } from './styles/animations.style';
+import { appear, appearSlideUp, slideUp } from './styles/animations.style';
 import { textStyle } from './styles/text.style';
 import {animate} from '@lit-labs/motion';
 import { IReduxState } from './models/redux-state.model';
@@ -30,12 +30,12 @@ export class LandingElement extends connect(store)(LitElement) {
     changingBlob = false;
 
 
-    static override styles = [textStyle, slideUp, appear ,css`
+    static override styles = [textStyle, appearSlideUp, slideUp, appear ,css`
     .element {
         display: flex;
         align-items: center;
         justify-content: space-around;
-        animation: slideUp 1s ease;
+        animation: appearSlideUp 1s ease;
     }
 
     blob3d-element {
