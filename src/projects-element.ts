@@ -1,6 +1,6 @@
-import { LitElement, html, css, PropertyValueMap } from 'lit';
+import { LitElement, html, css, PropertyValueMap, nothing } from 'lit';
 import { customElement, property } from 'lit/decorators.js';
-import { appear, appearSlideUp, slideUp } from './styles/animations.style';
+import { appearSlideUp } from './styles/animations.style';
 import { textStyle } from './styles/text.style';
 
 import "./card.element"
@@ -12,6 +12,8 @@ import { fetchProjects } from './redux/reducers/projects.reducer';
 import { IProjectModel } from './models/project.model';
 import { repeat } from 'lit/directives/repeat.js';
 import { IButtonModel } from './models/button.model';
+
+import "./button-element"
 
 
 @customElement('projects-element')
@@ -47,6 +49,9 @@ export class ProjectsElement extends connect(store)(LitElement) {
     @property({ type: Array })
     projects: IProjectModel[] = [];
 
+    @property({ type: Boolean })
+    projectsError = false;
+
     protected override firstUpdated(_changedProperties: PropertyValueMap<any> | Map<PropertyKey, unknown>): void {
         super.firstUpdated(_changedProperties)
         store.dispatch(fetchProjects());
@@ -57,6 +62,7 @@ export class ProjectsElement extends connect(store)(LitElement) {
 
 
         if (_state.projectsReducer.error) {
+            this.projectsError = true;
             setTimeout(() => {
                 store.dispatch(fetchProjects());
             }, 1000)
@@ -65,49 +71,62 @@ export class ProjectsElement extends connect(store)(LitElement) {
         }
     }
 
-    override render() {
-        if (this.projects.length === 0) {
-            return html``
-        }
-        return html`<div class="element">
-    <a class="main-text">Projects</a>
-
-    <div class="list">
-
-        ${repeat(this.projects, (project: IProjectModel) => html`
-
-
-        <card-element .cardTitle="${project.title}" .cardSubtitle="${project.date_created}">
-
-
-            <div style="display: flex; gap: 10px;flex-direction: column;">
-                ${project.description}
-
-
-
-                <div style="display: flex; gap: 5px;">
-
-                    ${repeat(project.buttons, (button: IButtonModel) => html`
-
-                    <button-element>${button.name}</button-element>
-
-                    `)}
-                </div>
+    renderWithProjects() {
+        return html`
+        <div class="element">
+        
+            <a class="main-text">Projects</a>
+        
+            <div class="list">
+        
+                ${repeat(this.projects, (project: IProjectModel) => html`
+        
+        
+                <card-element .cardTitle="${project.title}" .cardSubtitle="${project.date_created}">
+        
+        
+                    <div style="display: flex; gap: 10px;flex-direction: column;">
+                        ${project.description}
+        
+        
+        
+                        <div style="display: flex; gap: 5px;">
+        
+                            ${repeat(project.buttons, (button: IButtonModel) => html`
+        
+                            <button-element>${button.name}</button-element>
+        
+                            `)}
+                        </div>
+                    </div>
+        
+        
+                </card-element>
+                `)}
+        
+        
+        
+        
             </div>
+        
+        
+        </div>`
+    }
 
+    override render() {
 
-        </card-element>
-        `)}
+        if (this.projects.length > 0) {
+            return this.renderWithProjects();
+        }
+        if (this.projectsError) {
+            return html`<div class="element">
 
+    <a class="main-text">Projects</a>
+    <p>Can't fetch projects</p>
+</div>`
+        }
 
-
-
-
-
-    </div>
-
-
-</div>`;
+        return nothing;
     }
 }
 declare global {
