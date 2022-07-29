@@ -7,8 +7,8 @@
   "module": "my-element.js",
   "type": "module",
   "scripts": {
-    "build-ts": "tsc",
-    "build-ts:watch": "tsc --watch",
+    "build": "tsc",
+    "build:watch": "tsc --watch",
     "clean": "rimraf dist/ out/ dev-build/",
     "lint": "npm run lint:lit-analyzer && npm run lint:eslint",
     "lint:eslint": "eslint 'src/**/*.ts'",
@@ -17,7 +17,7 @@
     "analyze": "cem analyze --litelement --globs \"src/**/*.ts\"",
     "analyze:watch": "cem analyze --litelement --globs \"src/**/*.ts\" --watch",
     "serve": "rollup -c -w --environment BUILD:development",
-    "build": "rollup -c --environment INCLUDE_DEPS,BUILD:production"
+    "deploy": "rollup -c --environment INCLUDE_DEPS,BUILD:production"
   },
   "keywords": [
     "web-components",
