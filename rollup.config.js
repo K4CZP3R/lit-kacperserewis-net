@@ -1,38 +1,95 @@
 // Import rollup plugins
 import html from "@web/rollup-plugin-html";
-import { copy } from "@web/rollup-plugin-copy";
+import copy from "rollup-plugin-copy";
 import resolve from "@rollup/plugin-node-resolve";
 import { terser } from "rollup-plugin-terser";
 import minifyHTML from "rollup-plugin-minify-html-literals";
 import summary from "rollup-plugin-summary";
+// import json from "@rollup/plugin-json";
+import serve from "rollup-plugin-serve";
+import livereload from "rollup-plugin-livereload";
+import commonjs from "@rollup/plugin-commonjs";
+import css from "rollup-plugin-import-css";
+
+function getOutputDir(environment) {
+  switch (environment) {
+    case "production":
+      return "build";
+    case "development":
+      return "dev-build";
+    default:
+      throw new Error(`Unknown environment: ${environment}`);
+  }
+}
+
+const COMMON_PLUGINS = [
+  resolve({ browser: true }),
+  commonjs(),
+  summary(),
+  copy({
+    targets: [
+      {
+        src: "./node_modules/highlight.js/styles/a11y-dark.css",
+        dest: getOutputDir(process.env.BUILD) + "/assets",
+      },
+    ],
+  }),
+];
+
+function getOutputConfig(environment) {
+  switch (environment) {
+    case "production":
+      return { dir: "build" };
+    case "development":
+      return {
+        dir: "dev-build",
+        sourcemap: true,
+        entryFileNames: "[name].js",
+        chunkFileNames: "[name]-chunk.js",
+      };
+    default:
+      throw new Error(`Unknown environment: ${environment}`);
+  }
+}
+
+function getPlugins(environment) {
+  switch (environment) {
+    case "development":
+      return [
+        html({
+          input: "index.html",
+        }),
+        ...COMMON_PLUGINS,
+        livereload(),
+        serve({
+          contentBase: "dev-build",
+          open: false,
+          historyApiFallback: true,
+        }),
+      ];
+    case "production":
+      return [
+        html({
+          input: "index.html",
+        }),
+        // Minify HTML template literals
+        minifyHTML(),
+        // Minify JS
+        terser({
+          ecma: 2020,
+          module: true,
+          warnings: true,
+        }),
+        ...COMMON_PLUGINS,
+      ];
+    default:
+      throw new Error(`Unknown environment: ${environment}`);
+  }
+}
 
 export default {
-  plugins: [
-    // Entry point for application build; can specify a glob to build multiple
-    // HTML files for non-SPA app
-    html({
-      input: "index.html",
-    }),
-    // Resolve bare module specifiers to relative paths
-    resolve(),
-    // Minify HTML template literals
-    minifyHTML(),
-    // Minify JS
-    terser({
-      ecma: 2020,
-      module: true,
-      warnings: true,
-    }),
-    // Print bundle summary
-    summary(),
-    // Optional: copy any static assets to build directory
-    copy({
-      patterns: ["images/**/*"],
-    }),
-  ],
-  output: {
-    dir: "build",
-  },
+  plugins: getPlugins(process.env.BUILD),
+  output: getOutputConfig(process.env.BUILD),
   onwarn: function (warning) {
     // Skip certain warnings
 
