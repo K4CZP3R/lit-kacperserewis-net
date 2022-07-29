@@ -10,7 +10,7 @@ import "./blob-element"
 import "./blob3d-element"
 import { appear, appearSlideUp, slideUp } from './styles/animations.style';
 import { textStyle } from './styles/text.style';
-import {animate} from '@lit-labs/motion';
+import { animate } from '@lit-labs/motion';
 import { IReduxState } from './models/redux-state.model';
 import { ISocialModel } from './models/social.model';
 import { ILandingPageModel } from './models/landing-page.model';
@@ -19,18 +19,18 @@ import { fetchLandingPageCms } from './redux/reducers/landing-page.reducer';
 
 @customElement('landing-element')
 export class LandingElement extends connect(store)(LitElement) {
-    @property({type: Boolean})
-    simpleBlob =false;
+    @property({ type: Boolean })
+    simpleBlob = false;
 
 
-    @property({type: Boolean})
+    @property({ type: Boolean })
     changingCms = false;
 
-    @property({type: Boolean})
+    @property({ type: Boolean })
     changingBlob = false;
 
 
-    static override styles = [textStyle, appearSlideUp, slideUp, appear ,css`
+    static override styles = [textStyle, appearSlideUp, slideUp, appear, css`
     .element {
         display: flex;
         align-items: center;
@@ -87,7 +87,7 @@ export class LandingElement extends connect(store)(LitElement) {
     @property({ type: Array })
     socials: ISocialModel[] = [];
 
-    @property({type: Object})
+    @property({ type: Object })
     landingPage?: ILandingPageModel;
 
     protected override firstUpdated(_changedProperties: PropertyValueMap<any> | Map<PropertyKey, unknown>): void {
@@ -105,18 +105,18 @@ export class LandingElement extends connect(store)(LitElement) {
 
     override stateChanged(_state: IReduxState): void {
         super.stateChanged(_state);
-        if(_state.socialsReducer.error) {
+        if (_state.socialsReducer.error) {
             console.log("Socials fetch failed, trying again!", _state.socialsReducer)
             setTimeout(() => store.dispatch(fetchSocials()), 1000);
         } else {
             this.socials = _state.socialsReducer.socials;
         }
 
-        if(_state.landingPageReducer.error) {
+        if (_state.landingPageReducer.error) {
             console.log("Socials fetch failed, trying again!", _state.socialsReducer)
             setTimeout(() => store.dispatch(fetchLandingPageCms()), 1000);
         }
-        else if(_state.landingPageReducer.default){
+        else if (_state.landingPageReducer.default) {
             this.landingPage = _state.landingPageReducer.landingPage;
         } else {
 
@@ -124,21 +124,21 @@ export class LandingElement extends connect(store)(LitElement) {
             setTimeout(() => {
                 this.landingPage = _state.landingPageReducer.landingPage;
                 this.changingCms = false;
-            },250)
+            }, 250)
 
-            
+
         }
-        
+
 
     }
 
     blobClick() {
         this.changingBlob = true;
-        
+
         setTimeout(() => {
             this.simpleBlob = !this.simpleBlob;
             this.changingBlob = false;
-        },500)
+        }, 500)
 
     }
 
@@ -151,20 +151,16 @@ export class LandingElement extends connect(store)(LitElement) {
         <div class="element">
         
             <div style="display: flex; flex-direction: column;">
-            
                 <a class="main-text ${this.changingCms ? 'hide-cms' : ''}" ${animate()}>${this.landingPage?.mainText}</a>
                 <a class="sub-text ${this.changingCms ? 'hide-cms' : ''}" ${animate()}">${this.landingPage?.subText}</a>
                 <a class="bot-text ${this.changingCms ? 'hide-cms' : ''}" ${animate()}">${this.landingPage?.botText}</a>
-        
-        
-        
                 <div class="socials">
                     ${["Projects", "Blog"].map((link: any) => {
-                        return html`<a href="${link}">${link}</a>`
-                    })}
+            return html`<a href="${link}">${link}</a>`
+        })}
                     ${this.socials.map((social) => {
-                        return html`<a href="${social.url}">${social.name}</a>`
-                    })}
+            return html`<a href="${social.url}">${social.name}</a>`
+        })}
         
         
         
