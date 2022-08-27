@@ -3,7 +3,6 @@ import { customElement, property } from 'lit/decorators.js';
 import { connect } from 'pwa-helpers';
 
 import "./button-element"
-import { fetchSocials } from './redux/reducers/socials.reducer';
 import { store } from './redux/store';
 
 import "./blob-element"
@@ -14,7 +13,7 @@ import { animate } from '@lit-labs/motion';
 import { IReduxState } from './models/redux-state.model';
 import { ISocialModel } from './models/social.model';
 import { ILandingPageModel } from './models/landing-page.model';
-import { fetchLandingPageCms } from './redux/reducers/landing-page.reducer';
+import { LANDING_PAGE_CMS_RETRYIFY, SOCIALS_FETCH_RETRYIFY } from './helpers/retryify';
 
 
 @customElement('landing-element')
@@ -94,40 +93,31 @@ export class LandingElement extends connect(store)(LitElement) {
         super.firstUpdated(_changedProperties)
 
 
-        store.dispatch(fetchSocials());
-        store.dispatch(fetchLandingPageCms());
 
-
-
-
-
+        SOCIALS_FETCH_RETRYIFY().start().then(() => console.log("fetched socials!")).catch((e) => console.log("socials error", e))
+        LANDING_PAGE_CMS_RETRYIFY().start().then(() => console.log("fetched cms!")).catch((e) => console.log("cms error", e))
     }
 
     override stateChanged(_state: IReduxState): void {
         super.stateChanged(_state);
-        if (_state.socialsReducer.error) {
-            console.log("Socials fetch failed, trying again!", _state.socialsReducer)
-            setTimeout(() => store.dispatch(fetchSocials()), 1000);
-        } else {
+
+        if (!_state.socialsReducer.error) {
             this.socials = _state.socialsReducer.socials;
         }
 
-        if (_state.landingPageReducer.error) {
-            console.log("Socials fetch failed, trying again!", _state.socialsReducer)
-            setTimeout(() => store.dispatch(fetchLandingPageCms()), 1000);
-        }
-        else if (_state.landingPageReducer.default) {
+        // TODO: Check logic
+        if (!_state.landingPageReducer.error) {
+            this.landingPage = _state.landingPageReducer.landingPage;
+        } else if (_state.landingPageReducer.default) {
             this.landingPage = _state.landingPageReducer.landingPage;
         } else {
-
             this.changingCms = true;
             setTimeout(() => {
                 this.landingPage = _state.landingPageReducer.landingPage;
                 this.changingCms = false;
-            }, 250)
-
-
+            }, 250);
         }
+
 
 
     }
@@ -143,8 +133,7 @@ export class LandingElement extends connect(store)(LitElement) {
     }
 
 
-    @property({ type: String })
-    testProperty = '';
+
     override render() {
         return html`
 
@@ -165,7 +154,7 @@ export class LandingElement extends connect(store)(LitElement) {
         
         
                 </div>
-        
+
         
         
             </div>
