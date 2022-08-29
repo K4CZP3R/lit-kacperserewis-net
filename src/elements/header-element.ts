@@ -4,7 +4,7 @@ import { connect } from 'pwa-helpers';
 
 
 import "./button-element"
-import { store } from './redux/store';
+import { store } from '../redux/store';
 
 @customElement('header-element')
 export class HeaderElement extends connect(store)(LitElement) {

@@ -1,20 +1,20 @@
 
-import { fetchWrapper } from "../../helpers/fetch";
-import { IApiResponseModel } from "../../models/api-response.model";
-import { ISocialModel } from "../../models/social.model";
+import { SOCIALS_REPOSITORY } from "../../helpers/di-names.helper";
+import { ISocialRepository } from "../../repositories/interfaces/social.repository.interface";
+import { DependencyProviderService } from "../../services/dependency-provider.service";
+import { Logging } from "../../services/logging.service";
 
 export const FETCH_SOCIALS = "FETCH_SOCIALS";
 export const FETCH_SOCIALS_ERROR = "FETCH_SOCIALS_ERROR";
 
 export const fetchSocials = () => {
+    Logging.log("Fetching socials");
     return async function (dispatch: any) {
         try {
-
-            let data = await fetchWrapper<IApiResponseModel<ISocialModel[]>>(`${process.env.API_URL}/Socials`);
-
+            const data = await DependencyProviderService.getImpl<ISocialRepository>(SOCIALS_REPOSITORY).getAllSocials()
             dispatch({
                 type: FETCH_SOCIALS,
-                payload: data.data
+                payload: data
             });
         } catch (e: any) {
             dispatch({
@@ -22,10 +22,7 @@ export const fetchSocials = () => {
                 error: e
             });
         }
-
     }
-
-
 }
 
 const INITIAL_STATE: { socials: any[], error: string | undefined } = {

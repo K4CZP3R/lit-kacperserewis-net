@@ -1,18 +1,21 @@
-import { fetchWrapper } from "../../helpers/fetch";
-import { IApiResponseModel } from "../../models/api-response.model";
+import { LANDING_PAGE_REPOSITORY } from "../../helpers/di-names.helper";
 import { ILandingPageModel } from "../../models/landing-page.model";
+import { ILandingPageRepository } from "../../repositories/interfaces/landing-page.repository.interface";
+import { DependencyProviderService } from "../../services/dependency-provider.service";
+import { Logging } from "../../services/logging.service";
 
 export const FETCH_LANDING_PAGE = "FETCH_LANDING_PAGE";
 export const FETCH_LANDING_PAGE_ERROR = "FETCH_LANDING_PAGE_ERROR";
 
 export const fetchLandingPageCms = () => {
+    Logging.log("Fetching landing page");
     return async function (dispatch: any) {
         try {
-            let data = await fetchWrapper<IApiResponseModel<ILandingPageModel>>(`${process.env.API_URL}/LandingPage`);
-
+            const data = await DependencyProviderService.getImpl<ILandingPageRepository>(LANDING_PAGE_REPOSITORY).getLandingPage()
+            console.log("data is", data.botText)
             dispatch({
                 type: FETCH_LANDING_PAGE,
-                payload: data.data
+                payload: data
             });
         }
         catch (e: any) {

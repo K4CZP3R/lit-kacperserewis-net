@@ -1,18 +1,22 @@
-import { fetchWrapper } from "../../helpers/fetch";
-import { IApiResponseModel } from "../../models/api-response.model";
+import { PROJECTS_REPOSITORY } from "../../helpers/di-names.helper";
 import { IProjectModel } from "../../models/project.model";
+import { IProjectRepository } from "../../repositories/interfaces/project.repository.interface";
+import { DependencyProviderService } from "../../services/dependency-provider.service";
+import { Logging } from "../../services/logging.service";
 
 export const FETCH_PROJECTS = "FETCH_PROJECTS";
 export const FETCH_PROJECTS_ERROR = "FETCH_PROJECTS_ERROR";
 
 export const fetchProjects = () => {
+    Logging.log("Fetching projects");
     return async function (dispatch: any) {
         try {
-            let data = await fetchWrapper<IApiResponseModel<IProjectModel[]>>(`${process.env.API_URL}/Project?fields=*.*`);
+
+            const data = await DependencyProviderService.getImpl<IProjectRepository>(PROJECTS_REPOSITORY).getAllProjects();
 
             dispatch({
                 type: FETCH_PROJECTS,
-                payload: data.data
+                payload: data
             })
 
         } catch (e: any) {

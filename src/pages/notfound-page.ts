@@ -2,13 +2,13 @@ import { LitElement, html, css } from 'lit';
 import { customElement, property } from 'lit/decorators.js';
 
 
-import "./button-element"
-import "./blob3d-element"
-import { appear, slideUp } from './styles/animations.style';
-import { textStyle } from './styles/text.style';
+import "../elements/button-element"
+import "../elements/blob3d-element"
+import { appear, slideUp } from '../styles/animations.style';
+import { textStyle } from '../styles/text.style';
 
-@customElement('notfound-element')
-export class NotFoundElement extends LitElement {
+@customElement('notfound-page')
+export class NotFoundPage extends LitElement {
     static override styles = [appear, textStyle, slideUp, css`
         .element {
         display: flex;
@@ -55,6 +55,6 @@ export class NotFoundElement extends LitElement {
 }
 declare global {
     interface HTMLElementTagNameMap {
-        'notfound-element': NotFoundElement;
+        'notfound-page': NotFoundPage;
     }
 }

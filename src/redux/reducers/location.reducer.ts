@@ -1,7 +1,10 @@
+import { Logging } from "../../services/logging.service";
+
 export const CHANGE_LOCATION = "CHANGE_LOCATION";
 export const SET_META = "SET_META";
 
 export const setMeta = (title: string, description: string) => {
+    Logging.log("Setting meta", title, description);
     return {
         type: SET_META,
         title: title,
@@ -10,6 +13,7 @@ export const setMeta = (title: string, description: string) => {
 }
 
 export const changeLocation = (newLocation: string) => {
+    Logging.log("Changing location", newLocation);
     return {
         type: CHANGE_LOCATION,
         newLocation: newLocation

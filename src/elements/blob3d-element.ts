@@ -2,7 +2,7 @@ import { LitElement, html, css, PropertyValueMap } from 'lit';
 import { customElement, property } from 'lit/decorators.js';
 
 import * as THREE from "three";
-import { Perlin } from './helpers/perlin';
+import { Perlin } from '../helpers/perlin';
 
 @customElement('blob3d-element')
 export class Blob3dElement extends LitElement {

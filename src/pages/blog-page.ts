@@ -1,12 +1,12 @@
 import { html, css, LitElement } from 'lit';
 import { customElement, property } from 'lit/decorators.js';
 import { connect } from 'pwa-helpers';
-import { store } from "./redux/store"
+import { store } from "../redux/store"
 
 
 
-@customElement('blog-element')
-export class BlogElement extends connect(store)(LitElement) {
+@customElement('blog-page')
+export class BlogPage extends connect(store)(LitElement) {
     static override styles = css``;
 
 
@@ -40,6 +40,6 @@ export class BlogElement extends connect(store)(LitElement) {
 }
 declare global {
     interface HTMLElementTagNameMap {
-        'blog-element': BlogElement;
+        'blog-page': BlogPage;
     }
 }

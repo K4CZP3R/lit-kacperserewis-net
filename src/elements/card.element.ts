@@ -1,6 +1,6 @@
 import { LitElement, html, css } from 'lit';
 import { customElement, property } from 'lit/decorators.js';
-import { textStyle } from './styles/text.style';
+import { textStyle } from '../styles/text.style';
 
 
 @customElement('card-element')

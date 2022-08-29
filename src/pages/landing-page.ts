@@ -2,25 +2,24 @@ import { LitElement, html, css, PropertyValueMap } from 'lit';
 import { customElement, property } from 'lit/decorators.js';
 import { connect } from 'pwa-helpers';
 
-import "./button-element"
-import { store } from './redux/store';
+import "../elements/button-element"
+import { store } from '../redux/store';
 
-import "./blob-element"
-import "./blob3d-element"
-import { appear, appearSlideUp, slideUp } from './styles/animations.style';
-import { textStyle } from './styles/text.style';
+import "../elements/blob-element"
+import "../elements/blob3d-element"
+import { appear, appearSlideUp, slideUp } from '../styles/animations.style';
+import { textStyle } from '../styles/text.style';
 import { animate } from '@lit-labs/motion';
-import { IReduxState } from './models/redux-state.model';
-import { ISocialModel } from './models/social.model';
-import { ILandingPageModel } from './models/landing-page.model';
-import { LANDING_PAGE_CMS_RETRYIFY, SOCIALS_FETCH_RETRYIFY } from './helpers/retryify';
+import { IReduxState } from '../models/redux-state.model';
+import { ISocialModel } from '../models/social.model';
+import { ILandingPageModel } from '../models/landing-page.model';
+import { LANDING_PAGE_CMS_RETRYIFY, SOCIALS_FETCH_RETRYIFY } from '../helpers/retryify';
 
 
-@customElement('landing-element')
-export class LandingElement extends connect(store)(LitElement) {
+@customElement('landing-page')
+export class LandingPage extends connect(store)(LitElement) {
     @property({ type: Boolean })
     simpleBlob = false;
-
 
     @property({ type: Boolean })
     changingCms = false;
@@ -96,6 +95,7 @@ export class LandingElement extends connect(store)(LitElement) {
 
         SOCIALS_FETCH_RETRYIFY().start().then(() => console.log("fetched socials!")).catch((e) => console.log("socials error", e))
         LANDING_PAGE_CMS_RETRYIFY().start().then(() => console.log("fetched cms!")).catch((e) => console.log("cms error", e))
+
     }
 
     override stateChanged(_state: IReduxState): void {
@@ -167,6 +167,6 @@ export class LandingElement extends connect(store)(LitElement) {
 }
 declare global {
     interface HTMLElementTagNameMap {
-        'landing-element': LandingElement;
+        'landing-page': LandingPage;
     }
 }

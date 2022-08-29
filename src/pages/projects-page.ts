@@ -1,23 +1,23 @@
 import { LitElement, html, css, PropertyValueMap, nothing } from 'lit';
 import { customElement, property } from 'lit/decorators.js';
-import { appearSlideUp } from './styles/animations.style';
-import { textStyle } from './styles/text.style';
+import { appearSlideUp } from '../styles/animations.style';
+import { textStyle } from '../styles/text.style';
 
-import "./card.element"
+import "../elements/card.element"
 import { connect } from 'pwa-helpers';
-import { store } from './redux/store';
+import { store } from '../redux/store';
 
-import { IReduxState } from './models/redux-state.model';
-import { fetchProjects } from './redux/reducers/projects.reducer';
-import { IProjectModel } from './models/project.model';
+import { IReduxState } from '../models/redux-state.model';
+import { fetchProjects } from '../redux/reducers/projects.reducer';
+import { IProjectModel } from '../models/project.model';
 import { repeat } from 'lit/directives/repeat.js';
-import { IButtonModel } from './models/button.model';
+import { IButtonModel } from '../models/button.model';
 
-import "./button-element"
+import "../elements/button-element"
 
 
-@customElement('projects-element')
-export class ProjectsElement extends connect(store)(LitElement) {
+@customElement('projects-page')
+export class ProjectsPage extends connect(store)(LitElement) {
     static override styles = [textStyle, appearSlideUp, css`    
     .element {
         display: flex;
@@ -51,6 +51,7 @@ export class ProjectsElement extends connect(store)(LitElement) {
 
     @property({ type: Boolean })
     projectsError = false;
+
 
     protected override firstUpdated(_changedProperties: PropertyValueMap<any> | Map<PropertyKey, unknown>): void {
         super.firstUpdated(_changedProperties)
@@ -131,6 +132,6 @@ export class ProjectsElement extends connect(store)(LitElement) {
 }
 declare global {
     interface HTMLElementTagNameMap {
-        'projects-element': ProjectsElement;
+        'projects-page': ProjectsPage;
     }
 }

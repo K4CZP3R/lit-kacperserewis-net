@@ -1,6 +1,9 @@
+import { Logging } from "../../services/logging.service";
+
 export const ADD_POST = "ADD_POST";
 
 export const addPost = (post: any) => {
+    Logging.log("Adding post", post);
     return {
         type: ADD_POST,
         post: post
