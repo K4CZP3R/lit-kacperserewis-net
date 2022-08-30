@@ -1,4 +1,4 @@
-import { css } from "lit";
+import { css } from 'lit';
 
 export const slideUp = css`
 
@@ -11,7 +11,7 @@ export const slideUp = css`
             }
         }
 
-`
+`;
 
 export const appear = css`
     @keyframes appear {
@@ -22,7 +22,7 @@ export const appear = css`
             opacity: 1;
         }
     }
-`
+`;
 
 export const appearSlideUp = css`
     @keyframes appearSlideUp {
@@ -35,4 +35,4 @@ export const appearSlideUp = css`
                 transform: translateY(0px);
             }
     }
-`
+`;

@@ -1,4 +1,4 @@
-import { css } from "lit";
+import { css } from 'lit';
 
 export const textStyle = css`
     .main-text {
@@ -53,4 +53,4 @@ export const textStyle = css`
 
 
 
-`
+`;

@@ -2,8 +2,8 @@ import { LitElement, html, css } from 'lit';
 import { customElement, property } from 'lit/decorators.js';
 
 
-import "../elements/button-element"
-import "../elements/blob3d-element"
+import '../elements/button-element';
+import '../elements/blob3d-element';
 import { appear, slideUp } from '../styles/animations.style';
 import { textStyle } from '../styles/text.style';
 

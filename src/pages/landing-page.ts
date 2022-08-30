@@ -2,11 +2,11 @@ import { LitElement, html, css, PropertyValueMap } from 'lit';
 import { customElement, property } from 'lit/decorators.js';
 import { connect } from 'pwa-helpers';
 
-import "../elements/button-element"
+import '../elements/button-element';
 import { store } from '../redux/store';
 
-import "../elements/blob-element"
-import "../elements/blob3d-element"
+import '../elements/blob-element';
+import '../elements/blob3d-element';
 import { appear, appearSlideUp, slideUp } from '../styles/animations.style';
 import { textStyle } from '../styles/text.style';
 import { animate } from '@lit-labs/motion';
@@ -88,13 +88,13 @@ export class LandingPage extends connect(store)(LitElement) {
     @property({ type: Object })
     landingPage?: ILandingPageModel;
 
-    protected override firstUpdated(_changedProperties: PropertyValueMap<any> | Map<PropertyKey, unknown>): void {
-        super.firstUpdated(_changedProperties)
+    protected override firstUpdated(_changedProperties: PropertyValueMap<{[key:string]: unknown}> | Map<PropertyKey, unknown>): void {
+        super.firstUpdated(_changedProperties);
 
 
 
-        SOCIALS_FETCH_RETRYIFY().start().then(() => console.log("fetched socials!")).catch((e) => console.log("socials error", e))
-        LANDING_PAGE_CMS_RETRYIFY().start().then(() => console.log("fetched cms!")).catch((e) => console.log("cms error", e))
+        SOCIALS_FETCH_RETRYIFY().start().then(() => console.log('fetched socials!')).catch((e) => console.log('socials error', e));
+        LANDING_PAGE_CMS_RETRYIFY().start().then(() => console.log('fetched cms!')).catch((e) => console.log('cms error', e));
 
     }
 
@@ -128,7 +128,7 @@ export class LandingPage extends connect(store)(LitElement) {
         setTimeout(() => {
             this.simpleBlob = !this.simpleBlob;
             this.changingBlob = false;
-        }, 500)
+        }, 500);
 
     }
 
@@ -144,12 +144,12 @@ export class LandingPage extends connect(store)(LitElement) {
                 <a class="sub-text ${this.changingCms ? 'hide-cms' : ''}" ${animate()}">${this.landingPage?.subText}</a>
                 <a class="bot-text ${this.changingCms ? 'hide-cms' : ''}" ${animate()}">${this.landingPage?.botText}</a>
                 <div class="socials">
-                    ${["Projects", "Blog"].map((link: any) => {
-            return html`<a href="${link}">${link}</a>`
-        })}
+                    ${['Projects', 'Blog', 'Projects/ts'].map((link: string) => {
+        return html`<a href="${link}">${link}</a>`;
+    })}
                     ${this.socials.map((social) => {
-            return html`<a href="${social.url}">${social.name}</a>`
-        })}
+        return html`<a href="${social.url}">${social.name}</a>`;
+    })}
         
         
         
@@ -159,7 +159,7 @@ export class LandingPage extends connect(store)(LitElement) {
         
             </div>
         
-            <blob3d-element .useSimpleMaterial="${this.simpleBlob}" class="${this.changingBlob ? 'hide-blob' : ''}" ${animate()} @click="${(_e: any) => this.blobClick()}" blobSpeed="0.0003" lightColor="0xf6f6f2" size="300" blobColor="0xc2edce" blobSpikeness="1.75" ></blob3d-element>
+            <blob3d-element .useSimpleMaterial="${this.simpleBlob}" class="${this.changingBlob ? 'hide-blob' : ''}" ${animate()} @click="${() => this.blobClick()}" blobSpeed="0.0003" lightColor="0xf6f6f2" size="300" blobColor="0xc2edce" blobSpikeness="1.75" ></blob3d-element>
         </div>
         
         `;

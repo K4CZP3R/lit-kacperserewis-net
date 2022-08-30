@@ -30,7 +30,7 @@ export class ButtonElement extends LitElement {
     testProperty = '';
     override render() {
         return html`
-            <button class="button" @click="${() => Router.go(this.path ?? "/")}" class="element">
+            <button class="button" @click="${() => Router.go(this.path ?? '/')}" class="element">
                 <slot></slot>
             </button>
         `;

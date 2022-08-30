@@ -10,6 +10,7 @@ import serve from "rollup-plugin-serve";
 import livereload from "rollup-plugin-livereload";
 import commonjs from "@rollup/plugin-commonjs";
 import css from "rollup-plugin-import-css";
+import { join } from "node:path";
 
 function getOutputDir(environment) {
   switch (environment) {
@@ -58,6 +59,7 @@ function getPlugins(environment) {
       return [
         html({
           input: "index.html",
+          publicPath: "..",
         }),
         ...COMMON_PLUGINS,
         livereload(),

@@ -27,7 +27,7 @@ export class CardElement extends LitElement {
     `];
 
     @property({ type: String })
-    cardTitle?: string
+    cardTitle?: string;
 
     @property({ type: String })
     cardSubtitle?: string;

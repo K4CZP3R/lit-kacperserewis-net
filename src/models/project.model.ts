@@ -1,4 +1,4 @@
-import { IButtonModel } from "./button.model";
+import { IButtonModel } from './button.model';
 
 export interface IProjectModel {
     id: string;

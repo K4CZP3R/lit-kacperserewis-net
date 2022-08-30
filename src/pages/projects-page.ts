@@ -3,17 +3,18 @@ import { customElement, property } from 'lit/decorators.js';
 import { appearSlideUp } from '../styles/animations.style';
 import { textStyle } from '../styles/text.style';
 
-import "../elements/card.element"
+import '../elements/card.element';
 import { connect } from 'pwa-helpers';
 import { store } from '../redux/store';
 
 import { IReduxState } from '../models/redux-state.model';
-import { fetchProjects } from '../redux/reducers/projects.reducer';
 import { IProjectModel } from '../models/project.model';
 import { repeat } from 'lit/directives/repeat.js';
 import { IButtonModel } from '../models/button.model';
 
-import "../elements/button-element"
+import '../elements/button-element';
+import { PROJECTS_FETCH_RETYFIY } from '../helpers/retryify';
+import { Logging } from '../services/logging.service';
 
 
 @customElement('projects-page')
@@ -53,23 +54,20 @@ export class ProjectsPage extends connect(store)(LitElement) {
     projectsError = false;
 
 
-    protected override firstUpdated(_changedProperties: PropertyValueMap<any> | Map<PropertyKey, unknown>): void {
-        super.firstUpdated(_changedProperties)
-        store.dispatch(fetchProjects());
+    protected override firstUpdated(_changedProperties: PropertyValueMap<{[key:string]: unknown}> | Map<PropertyKey, unknown>): void {
+        super.firstUpdated(_changedProperties);
+
+        PROJECTS_FETCH_RETYFIY().start().then(() => Logging.log('fetched projects!')).catch((e) => Logging.log('projects error', e));
     }
 
     override stateChanged(_state: IReduxState): void {
-        super.stateChanged(_state)
+        super.stateChanged(_state);
 
 
-        if (_state.projectsReducer.error) {
-            this.projectsError = true;
-            setTimeout(() => {
-                store.dispatch(fetchProjects());
-            }, 1000)
-        } else {
+        if (!_state.projectsReducer.error) {
             this.projects = _state.projectsReducer.projects;
         }
+
     }
 
     renderWithProjects() {
@@ -111,7 +109,7 @@ export class ProjectsPage extends connect(store)(LitElement) {
             </div>
         
         
-        </div>`
+        </div>`;
     }
 
     override render() {
@@ -124,7 +122,7 @@ export class ProjectsPage extends connect(store)(LitElement) {
 
     <a class="main-text">Projects</a>
     <p>Can't fetch projects</p>
-</div>`
+</div>`;
         }
 
         return nothing;

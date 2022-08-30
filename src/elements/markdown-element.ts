@@ -3,7 +3,7 @@ import { customElement, property } from 'lit/decorators.js';
 import { unsafeHTML } from 'lit/directives/unsafe-html.js';
 
 
-import { marked } from "marked";
+import { marked } from 'marked';
 
 import hljs from 'highlight.js/lib/core';
 import javascript from 'highlight.js/lib/languages/javascript';
@@ -16,32 +16,32 @@ export class MarkdownElement extends LitElement {
     static override styles = css``;
 
     @property({ type: String })
-    output: string = '';
+    output = '';
 
     @property({ type: String })
-    input: string = '# xD Hello, world!\r\nThis is my code:\n\n```js\nSystem.out.println(\"Hello, world!\");\r\n```\n\n';
+    input = '# xD Hello, world!\r\nThis is my code:\n\n```js\nSystem.out.println("Hello, world!");\r\n```\n\n';
 
 
 
-    protected override firstUpdated(_changedProperties: PropertyValueMap<any> | Map<PropertyKey, unknown>): void {
-        super.firstUpdated(_changedProperties)
+    protected override firstUpdated(_changedProperties: PropertyValueMap<unknown> | Map<PropertyKey, unknown>): void {
+        super.firstUpdated(_changedProperties);
         hljs.registerLanguage('javascript', javascript);
         hljs.registerLanguage('typescript', typescript);
         hljs.registerLanguage('bash', bash);
 
         marked.setOptions({
             highlight: (code: string, lang: string) => {
-                let ret = hljs.highlight(code, { language: lang });
+                const ret = hljs.highlight(code, { language: lang });
                 return `<pre><code class="hljs">${ret.value}</code></pre>`;
             }
 
-        })
+        });
 
 
     }
 
-    protected override updated(_changedProperties: PropertyValueMap<any> | Map<PropertyKey, unknown>): void {
-        super.updated(_changedProperties)
+    protected override updated(_changedProperties: PropertyValueMap<unknown> | Map<PropertyKey, unknown>): void {
+        super.updated(_changedProperties);
         this.output = marked(this.input);
     }
 

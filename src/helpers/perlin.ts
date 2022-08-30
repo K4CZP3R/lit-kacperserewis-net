@@ -1,10 +1,8 @@
 class Grad {
-    constructor(public x: any, public y: any, public z: any) {
-
+    constructor(public x: number, public y: number, public z: number) {
     }
 
-
-    dot3(x: any, y: any, z: any) {
+    dot3(x: number, y: number, z: number) {
         return this.x * x + this.y * y + this.z * z;
     }
 }
@@ -39,7 +37,7 @@ export class Perlin {
     }
 
 
-    private init(seed: any) {
+    private init(seed: number) {
         if (seed > 0 && seed < 1) {
             // Scale the seed out
             seed *= 65536;
@@ -50,8 +48,8 @@ export class Perlin {
             seed |= seed << 8;
         }
 
-        for (var i = 0; i < 256; i++) {
-            var v;
+        for (let i = 0; i < 256; i++) {
+            let v;
             if (i & 1) {
                 v = Perlin.p[i] ^ (seed & 255);
             } else {
@@ -63,37 +61,37 @@ export class Perlin {
         }
     }
 
-    static fade(t: any) {
+    static fade(t: number) {
         return t * t * t * (t * (t * 6 - 15) + 10);
     }
 
-    static lerp(a: any, b: any, t: any) {
+    static lerp(a: number, b: number, t: number) {
         return (1 - t) * a + t * b;
     }
 
 
-    perlin3(x: any, y: any, z: any) {
+    perlin3(x: number, y: number, z: number) {
         // Find unit grid cell containing point
-        var X = Math.floor(x), Y = Math.floor(y), Z = Math.floor(z);
+        let X = Math.floor(x), Y = Math.floor(y), Z = Math.floor(z);
         // Get relative xyz coordinates of point within that cell
         x = x - X; y = y - Y; z = z - Z;
         // Wrap the integer cells at 255 (smaller integer period can be introduced here)
         X = X & 255; Y = Y & 255; Z = Z & 255;
 
         // Calculate noise contributions from each of the eight corners
-        var n000 = this.gradP[X + this.perm[Y + this.perm[Z]]].dot3(x, y, z);
-        var n001 = this.gradP[X + this.perm[Y + this.perm[Z + 1]]].dot3(x, y, z - 1);
-        var n010 = this.gradP[X + this.perm[Y + 1 + this.perm[Z]]].dot3(x, y - 1, z);
-        var n011 = this.gradP[X + this.perm[Y + 1 + this.perm[Z + 1]]].dot3(x, y - 1, z - 1);
-        var n100 = this.gradP[X + 1 + this.perm[Y + this.perm[Z]]].dot3(x - 1, y, z);
-        var n101 = this.gradP[X + 1 + this.perm[Y + this.perm[Z + 1]]].dot3(x - 1, y, z - 1);
-        var n110 = this.gradP[X + 1 + this.perm[Y + 1 + this.perm[Z]]].dot3(x - 1, y - 1, z);
-        var n111 = this.gradP[X + 1 + this.perm[Y + 1 + this.perm[Z + 1]]].dot3(x - 1, y - 1, z - 1);
+        const n000 = this.gradP[X + this.perm[Y + this.perm[Z]]].dot3(x, y, z);
+        const n001 = this.gradP[X + this.perm[Y + this.perm[Z + 1]]].dot3(x, y, z - 1);
+        const n010 = this.gradP[X + this.perm[Y + 1 + this.perm[Z]]].dot3(x, y - 1, z);
+        const n011 = this.gradP[X + this.perm[Y + 1 + this.perm[Z + 1]]].dot3(x, y - 1, z - 1);
+        const n100 = this.gradP[X + 1 + this.perm[Y + this.perm[Z]]].dot3(x - 1, y, z);
+        const n101 = this.gradP[X + 1 + this.perm[Y + this.perm[Z + 1]]].dot3(x - 1, y, z - 1);
+        const n110 = this.gradP[X + 1 + this.perm[Y + 1 + this.perm[Z]]].dot3(x - 1, y - 1, z);
+        const n111 = this.gradP[X + 1 + this.perm[Y + 1 + this.perm[Z + 1]]].dot3(x - 1, y - 1, z - 1);
 
         // Compute the fade curve value for x, y, z
-        var u = Perlin.fade(x);
-        var v = Perlin.fade(y);
-        var w = Perlin.fade(z);
+        const u = Perlin.fade(x);
+        const v = Perlin.fade(y);
+        const w = Perlin.fade(z);
 
         // Interpolate
         return Perlin.lerp(
@@ -104,5 +102,5 @@ export class Perlin {
                 Perlin.lerp(n010, n110, u),
                 Perlin.lerp(n011, n111, u), w),
             v);
-    };
+    }
 }
