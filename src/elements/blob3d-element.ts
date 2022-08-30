@@ -108,7 +108,9 @@ export class Blob3dElement extends LitElement {
             return;
         } 
 
-        blobGeometry.setAttribute('basePosition', new THREE.BufferAttribute([],0).copy(blobGeometry.attributes.position));
+        const arr = blobGeometry.attributes.position.array;
+
+        blobGeometry.setAttribute('basePosition', new THREE.BufferAttribute(arr,arr.length).copy(blobGeometry.attributes.position));
         const blobMaterial = new THREE.MeshPhongMaterial({
             emissive: this.blobColor,
             emissiveIntensity: this.blobColorEmission,
