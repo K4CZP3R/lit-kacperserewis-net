@@ -36,45 +36,10 @@ export class AppElement extends connect(store)(LitElement) {
         align-items: center;
         justify-content: space-between;
         height: 100vh;
-
-
-    }
-
-    .main-sections > * {
-        max-width: 100%;
-        width: 65vw;
-        
-    }
-
-    /* Responsive */
-    @media (max-width: 1072px) {
-        .main-sections > * {
-            width: 75vw;
-        }
-    }
-
-    @media (max-width: 768px) {
-        .main-sections > * {
-            width: 85vw;
-        }
-    }
-
-    .header {
-        /* border: 1px solid black; */
-        width: 100vw;
-    }
-
-
-    .footer {
-        /* border: 1px solid black; */
-        width: 100vw;
+        padding: 10px;
 
     }
 
-    
-
-
-    /* 388087, 6fb3b8, badfe7, c2edce, f6f6f2 */
     
     `;
 

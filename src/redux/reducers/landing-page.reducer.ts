@@ -31,7 +31,6 @@ export const fetchLandingPageCms = () => {
     return async function (dispatch: Dispatch<Action>) {
         try {
             const data = await DependencyProviderService.getImpl<ILandingPageRepository>(LANDING_PAGE_REPOSITORY).getLandingPage();
-            console.log('data is', data.botText);
             dispatch({
                 type: 'FETCH_LANDING_PAGE',
                 payload: data
@@ -44,23 +43,18 @@ export const fetchLandingPageCms = () => {
 };
 
 
-const INITIAL_STATE: { landingPage: ILandingPageModel; error: string | undefined; default: boolean } = {
-    landingPage: {
-        mainText: 'Kacper Serewiś',
-        subText: 'Junior Software Developer',
-        botText: 'Student at Fontys, working part-time as developer at Stofloos'
-    },
-    default: true,
+const INITIAL_STATE: { landingPage?: ILandingPageModel; error: string | undefined;  } = {
+    landingPage: undefined,
     error: undefined
 };
 
 
 export const landingPageReducer = (state = INITIAL_STATE, action: AnyAction) => {
     if (matchFetchLandingPage(action)) {
-        return { ...state, landingPage: action.payload, error: undefined, default: false };
+        return { ...state, landingPage: action.payload, error: undefined};
     }
     if (matchFetchLandingPageError(action)) {
-        return { ...state, landingPage: INITIAL_STATE.landingPage, error: action.error, default: true };
+        return { ...state, landingPage: INITIAL_STATE.landingPage, error: action.error };
     }
     return state;
     

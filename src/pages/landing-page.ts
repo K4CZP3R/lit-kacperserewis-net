@@ -1,4 +1,4 @@
-import { LitElement, html, css, PropertyValueMap } from 'lit';
+import { LitElement, html, css, PropertyValueMap, nothing } from 'lit';
 import { customElement, property } from 'lit/decorators.js';
 import { connect } from 'pwa-helpers';
 
@@ -33,10 +33,19 @@ export class LandingPage extends connect(store)(LitElement) {
         display: flex;
         align-items: center;
         justify-content: space-around;
-        animation: appearSlideUp 1s ease;
+        /* animation: appearSlideUp 1s ease; */
     }
 
     blob3d-element {
+        animation: appear 2s ease;
+    }
+
+
+    .main-text, .sub-text, .bot-text {
+        animation: appear 1s ease;
+    }
+
+    .social-link {
         animation: appear 1s ease;
     }
 
@@ -74,7 +83,6 @@ export class LandingPage extends connect(store)(LitElement) {
             position: absolute;
             z-index: -1;
         }
-     
     }
 
 
@@ -108,15 +116,8 @@ export class LandingPage extends connect(store)(LitElement) {
         // TODO: Check logic
         if (!_state.landingPageReducer.error) {
             this.landingPage = _state.landingPageReducer.landingPage;
-        } else if (_state.landingPageReducer.default) {
-            this.landingPage = _state.landingPageReducer.landingPage;
-        } else {
-            this.changingCms = true;
-            setTimeout(() => {
-                this.landingPage = _state.landingPageReducer.landingPage;
-                this.changingCms = false;
-            }, 250);
-        }
+        }  
+        
 
 
 
@@ -139,25 +140,29 @@ export class LandingPage extends connect(store)(LitElement) {
 
         <div class="element">
         
-            <div style="display: flex; flex-direction: column;">
-                <a class="main-text ${this.changingCms ? 'hide-cms' : ''}" ${animate()}>${this.landingPage?.mainText}</a>
-                <a class="sub-text ${this.changingCms ? 'hide-cms' : ''}" ${animate()}">${this.landingPage?.subText}</a>
-                <a class="bot-text ${this.changingCms ? 'hide-cms' : ''}" ${animate()}">${this.landingPage?.botText}</a>
-                <div class="socials">
-                    ${['Projects', 'Blog', 'Projects/ts'].map((link: string) => {
-        return html`<a href="${link}">${link}</a>`;
-    })}
-                    ${this.socials.map((social) => {
-        return html`<a href="${social.url}">${social.name}</a>`;
-    })}
-        
-        
-        
-                </div>
 
-        
-        
-            </div>
+        ${this.landingPage ? html` <div style="display: flex; flex-direction: column;">
+
+<a class="main-text testje">${this.landingPage?.mainText}</a>
+    <a class="sub-text testje">${this.landingPage?.subText}</a>
+    <a class="bot-text testje">${this.landingPage?.botText}</a>
+    
+    <div class="socials">
+        ${['Projects', 'Blog', 'Projects/ts'].map((link: string) => {
+        return html`<a class="social-link" href="${link}">${link}</a>`;
+    })}
+        ${this.socials.map((social) => {
+        return html`<a class="social-link" href="${social.url}">${social.name}</a>`;
+    })}
+
+
+
+    </div>
+
+
+
+</div>` : nothing}
+           
         
             <blob3d-element .useSimpleMaterial="${this.simpleBlob}" class="${this.changingBlob ? 'hide-blob' : ''}" ${animate()} @click="${() => this.blobClick()}" blobSpeed="0.0003" lightColor="0xf6f6f2" size="300" blobColor="0xc2edce" blobSpikeness="1.75" ></blob3d-element>
         </div>

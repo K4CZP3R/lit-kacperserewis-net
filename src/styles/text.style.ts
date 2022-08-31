@@ -2,54 +2,20 @@ import { css } from 'lit';
 
 export const textStyle = css`
     .main-text {
-        font-size: 6em;
+        font-size: clamp(3em, 15vw, 5em); 
         font-weight: bold;
     }
 
     .sub-text {
-        font-size: 3em;
+        font-size: clamp(2.5em, 15vw, 1.5em);
     }
 
     .bot-text {
-        font-size: 2em;
+        font-size: clamp(1.5em, 15vw, 1em);
     }
 
 
-     /* responsive */
-     @media (max-width: 1200px) {
-        .main-text {
-            font-size: 5em;
-        }
-        .sub-text {
-            font-size: 2.5em;
-        }
-        .bot-text {
-            font-size: 1.5em;
-        }
-    }
-    @media (max-width: 768px) {
-
-        .main-text {
-            font-size: 4em;
-        }
-        .sub-text {
-            font-size: 2em;
-        }
-        .bot-text {
-            font-size: 1.5em;
-        }
-    }
-    @media (max-width: 480px) {
-        .main-text {
-            font-size: 3em;
-        }
-        .sub-text {
-            font-size: 1.5em;
-        }
-        .bot-text {
-            font-size: 1.5em;
-        }
-    }
+    
 
 
 
