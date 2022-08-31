@@ -33,7 +33,6 @@ export class LandingPage extends connect(store)(LitElement) {
         display: flex;
         align-items: center;
         justify-content: space-around;
-        /* animation: appearSlideUp 1s ease; */
     }
 
     .content {
@@ -72,7 +71,7 @@ export class LandingPage extends connect(store)(LitElement) {
         display: flex;
         gap: 10px;
         margin-top: 3%;
-        padding-left: 1%;
+        /* padding-left: 1%; */
         min-height: 40px;
         animation: appear 1s ease;
         flex-wrap: wrap;
