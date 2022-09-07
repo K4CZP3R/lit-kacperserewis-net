@@ -56,12 +56,13 @@ export class Blob3dElement extends LitElement {
         this.initialize3d();
         requestAnimationFrame(this.render3d.bind(this));
 
+
     }
 
     protected override updated(_changedProperties: PropertyValueMap<{[key:string]: unknown}> | Map<PropertyKey, unknown>): void {
         super.updated(_changedProperties);
 
-        if (_changedProperties.has('useSimpleMaterial') && this.blob) {
+        if ((_changedProperties.has('useSimpleMaterial') || _changedProperties.has('blobColor')) && this.blob) {
             this.blob.material = this.useSimpleMaterial ? new THREE.MeshBasicMaterial({
                 color: this.blobColor,
             }) : new THREE.MeshPhongMaterial({
