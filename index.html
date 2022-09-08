@@ -13,11 +13,19 @@
   <script type="module" src="/out/app-element.js"></script>
   <style>
     :root {
-      --primary-color: #388087;
-      --secondary-color: #6fb3b8;
-      --primary-color-light: #badfe7;
-      --secondary-color-light: #c2edce;
+
+      --button-bg: #c2edce;
+      --button-fg: #388087;
+
+
+      --card-bg: #f6f6f2;
+      --card-fg: #388087;
+
+      --text-color: #388087;
       --background-color: #f6f6f2;
+
+
+      --blob-color: var(--button-bg);
 
     }
 
@@ -30,7 +38,7 @@
     }
 
     body {
-      color: var(--primary-color);
+      color: var(--text-color);
       background-color: var(--background-color);
     }
   </style>
@@ -41,7 +49,7 @@
     window.process = {
       env: {
         NODE_ENV: 'production',
-        API_URL: "https://99sxsqgh.directus.app/items"
+        API_URL: "https://directus.kacperserewis.net/items"
       }
     };
 
@@ -51,6 +59,8 @@
 
 
   <app-element></app-element>
+
+  Loading!
 </body>
 
 </html>

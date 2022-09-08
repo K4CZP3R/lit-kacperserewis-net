@@ -1,7 +1,7 @@
 import { LitElement, html, css } from 'lit';
 import { customElement, property } from 'lit/decorators.js';
 
-import { Router } from '@vaadin/router';
+// import { Router } from '@vaadin/router';
 
 @customElement('button-element')
 export class ButtonElement extends LitElement {
@@ -33,7 +33,7 @@ export class ButtonElement extends LitElement {
  left: 0;
  display: block;
  border-radius: 50px;
- background: var(--primary-color-light);
+ background: var(--button-bg);
  width: 45px;
  height: 45px;
  transition: all 0.3s ease;
@@ -45,7 +45,7 @@ export class ButtonElement extends LitElement {
  font-size: 18px;
  font-weight: 700;
  letter-spacing: 0.05em;
- color: var(--primary-color);
+ color: var(--button-fg);
 }
 
 .cta svg {
@@ -55,7 +55,7 @@ export class ButtonElement extends LitElement {
  fill: none;
  stroke-linecap: round;
  stroke-linejoin: round;
- stroke: var(--primary-color);
+ stroke: var(--button-fg);
  stroke-width: 2;
  transform: translateX(-5px);
  transition: all 0.3s ease;
@@ -82,11 +82,9 @@ export class ButtonElement extends LitElement {
     testProperty = '';
     override render() {
         return html`
-            <!-- <button class="button" @click="${() => Router.go(this.path ?? '/')}" class="element">
-                <slot></slot>
-            </button> -->
 
-            <button class="cta" @click="${() => this.externalPath ? location.href = this.path ?? '' : Router.go(this.path ?? '/')}">
+
+            <button class="cta" @click="${() => this.externalPath ? location.href = this.path ?? '' : ''}">
   <span><slot></slot></span>
   <svg viewBox="0 0 13 10" height="10px" width="15px">
     <path d="M1,5 L11,5"></path>

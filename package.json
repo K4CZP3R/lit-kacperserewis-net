@@ -43,7 +43,8 @@
     "reselect": "^4.1.6",
     "rollup-plugin-copy": "^3.4.0",
     "rollup-plugin-import-css": "^3.0.3",
-    "three": "^0.142.0"
+    "three": "^0.142.0",
+    "weightless": "^0.0.37"
   },
   "devDependencies": {
     "@custom-elements-manifest/analyzer": "^0.6.3",
