@@ -27,19 +27,12 @@ import {  displayFromQueue, initializeElement } from './redux/reducers/snackbar.
 import { IPageRepository } from './repositories/interfaces/page.repository.interface';
 import { PageApiRepository } from './repositories/page-api.repository';
 import { appear } from './styles/animations.style';
+import { Router } from '@vaadin/router';
 @customElement('app-element')
 export class AppElement extends connect(store)(LitElement) {
     @property({ type: Object })
-    router?: any;
+    router?: Router;
 
-    @property({type: Boolean})
-    isImporting = false;
-
-    @property({type: Boolean})
-    routerImported = false;
-
-    @property({type: Boolean})
-    showLandingWhileLoading = window.location.href.endsWith('/');
 
     static override styles = [appear, css`
     .main-sections {
@@ -99,53 +92,41 @@ export class AppElement extends connect(store)(LitElement) {
         }
 
 
-        import('@vaadin/router').then(async (router) => {
-            Logging.log('Router imported');
-            this.routerImported = true;
-            if(!this.shadowRoot) {
-                Logging.log('Shadow root is null');
-                return;
-            }
-
-
-
-            // Wait until element with id "outlet" is available
-            await this.updateComplete;
-            
-
-
-            this.router = new router.Router(this.shadowRoot.getElementById('outlet'));
         
-            this.router.setRoutes([
-                {
-                    path: '/', component: 'landing-page', action: async () => {
-                        this.onLocationChanged('/', 'kacperserewis.net', 'My personal website'); await import('./pages/landing-page');
-                    }
-                },
-                {
-                    path: '/blog', component: 'blog-page', action: async () => {
-                        this.onLocationChanged('/blog', 'blog - kacperserewis.net', 'My blog with things I made.'); await import('./pages/blog-page');
-                    }
-                },
-                {
-                    path: '/projects', component: 'projects-page', action: async () => {
-                        this.onLocationChanged('/projects', 'projects - kacperserewis.net', 'My projects.'); await import('./pages/projects-page');
-                    }
-                },
-                {
-                    path: '/projects/:name', component: 'project-page', action: async () => {
-                        this.onLocationChanged('/projects/:name', 'project - kacperserewis.net', 'My project.'); await import('./pages/project-page');
-                    }
-                },
-                {
-                    path: '(.*)', component: 'notfound-page', action: async () => {
-                        this.onLocationChanged('.*', 'fallback - kacperserewis.net', 'Fallback page for unknown paths'); store.dispatch(changeLocation('.*'));
-                    }
-                },
-            ]);
 
 
-        });
+        this.router = new Router(this.shadowRoot.getElementById('outlet'));
+        
+        this.router.setRoutes([
+            {
+                path: '/', component: 'landing-page', action: async () => {
+                    this.onLocationChanged('/', 'kacperserewis.net', 'My personal website'); await import('./pages/landing-page');
+                }
+            },
+            {
+                path: '/blog', component: 'blog-page', action: async () => {
+                    this.onLocationChanged('/blog', 'blog - kacperserewis.net', 'My blog with things I made.'); await import('./pages/blog-page');
+                }
+            },
+            {
+                path: '/projects', component: 'projects-page', action: async () => {
+                    this.onLocationChanged('/projects', 'projects - kacperserewis.net', 'My projects.'); await import('./pages/projects-page');
+                }
+            },
+            {
+                path: '/projects/:name', component: 'project-page', action: async () => {
+                    this.onLocationChanged('/projects/:name', 'project - kacperserewis.net', 'My project.'); await import('./pages/project-page');
+                }
+            },
+            {
+                path: '(.*)', component: 'notfound-page', action: async () => {
+                    this.onLocationChanged('.*', 'fallback - kacperserewis.net', 'Fallback page for unknown paths'); store.dispatch(changeLocation('.*'));
+                }
+            },
+        ]);
+
+
+        
 
 
         
@@ -205,10 +186,7 @@ export class AppElement extends connect(store)(LitElement) {
        <div id="snackbar-container"></div>
         <div class="main-sections">
             <header-element class="header"> </header-element>
-
-            ${!this.showLandingWhileLoading || this.routerImported  ? html`<div id="outlet"></div>` : html`<landing-page id="first"></landing-page>`}
-
-
+            <div id="outlet"></div>
             <footer-element class="footer"></footer-element>
         </div>
        
