@@ -1,8 +1,8 @@
 import { AnyAction, Dispatch } from 'redux';
 import { Logging } from '../../services/logging.service';
 
-interface ActionChangeLocation extends AnyAction {
-    type: 'CHANGE_LOCATION';
+interface ActionUpdateLocation extends AnyAction {
+    type: 'UPDATE_LOCATION';
     newLocation: string;
 }
 
@@ -12,15 +12,15 @@ interface ActionSetMeta extends AnyAction {
     description: string;
 }
 
-function matchChangeLocation(action: AnyAction): action is ActionChangeLocation {
-    return action.type === 'CHANGE_LOCATION';
+function matchUpdateLocation(action: AnyAction): action is ActionUpdateLocation {
+    return action.type === 'UPDATE_LOCATION';
 }
 
 function matchSetMeta(action: AnyAction): action is ActionSetMeta {
     return action.type === 'SET_META';
 }
 
-type Action = ActionChangeLocation | ActionSetMeta;
+type Action = ActionUpdateLocation | ActionSetMeta;
 
 export const setMeta = (title: string, description: string) => {
     Logging.log('Setting meta', title, description);
@@ -39,7 +39,7 @@ export const changeLocation = (newLocation: string) => {
 
     return function (dispatch: Dispatch<Action>) {
         dispatch({
-            type: 'CHANGE_LOCATION',
+            type: 'UPDATE_LOCATION',
             newLocation
         });
     };
@@ -52,7 +52,7 @@ const INITIAL_STATE: { location: string; title: string; description: string } = 
 };
 
 export const locationReducer = (state = INITIAL_STATE, action: AnyAction) => {
-    if(matchChangeLocation(action)) {
+    if(matchUpdateLocation(action)) {
         return {...state, location: action.newLocation};
     }
     if(matchSetMeta(action)) {
