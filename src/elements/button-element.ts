@@ -1,3 +1,4 @@
+import { Router } from '@vaadin/router';
 import { LitElement, html, css } from 'lit';
 import { customElement, property } from 'lit/decorators.js';
 
@@ -84,7 +85,7 @@ export class ButtonElement extends LitElement {
         return html`
 
 
-            <button class="cta" @click="${() => this.externalPath ? location.href = this.path ?? '' : ''}">
+            <button class="cta" @click="${() => this.externalPath ? (location.href = this.path ?? '') : Router.go(this.path ?? '')}">
   <span><slot></slot></span>
   <svg viewBox="0 0 13 10" height="10px" width="15px">
     <path d="M1,5 L11,5"></path>
