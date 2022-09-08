@@ -49,9 +49,9 @@ export class LandingPage extends connect(store)(LitElement) {
     }
 
 
-    /* .main-text, .sub-text, .bot-text {
+     .main-text, .sub-text, .bot-text {
          animation: appear 1s ease; 
-    } */
+    } 
 
     .social-link {
         animation: appear 1s ease;
