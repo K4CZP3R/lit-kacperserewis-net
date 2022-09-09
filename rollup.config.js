@@ -1,23 +1,97 @@
 // Import rollup plugins
 import html from "@web/rollup-plugin-html";
-import polyfillsLoader from "@web/rollup-plugin-polyfills-loader";
-import { copy } from "@web/rollup-plugin-copy";
+import copy from "rollup-plugin-copy";
 import resolve from "@rollup/plugin-node-resolve";
-import { getBabelOutputPlugin } from "@rollup/plugin-babel";
 import { terser } from "rollup-plugin-terser";
 import minifyHTML from "rollup-plugin-minify-html-literals";
 import summary from "rollup-plugin-summary";
+// import json from "@rollup/plugin-json";
+import serve from "rollup-plugin-serve";
+import livereload from "rollup-plugin-livereload";
+import commonjs from "@rollup/plugin-commonjs";
+import css from "rollup-plugin-import-css";
+import { join } from "node:path";
 
-// Configure an instance of @web/rollup-plugin-html
-const htmlPlugin = html({
-  rootDir: "./",
-  flattenOutput: false,
-});
+function getOutputDir(environment) {
+  switch (environment) {
+    case "production":
+      return "build";
+    case "development":
+      return "dev-build";
+    default:
+      throw new Error(`Unknown environment: ${environment}`);
+  }
+}
+
+const COMMON_PLUGINS = [
+  resolve({ browser: true }),
+  commonjs(),
+  summary(),
+  copy({
+    targets: [
+      {
+        src: "./node_modules/highlight.js/styles/a11y-dark.css",
+        dest: getOutputDir(process.env.BUILD) + "/assets",
+      },
+    ],
+  }),
+];
+
+function getOutputConfig(environment) {
+  switch (environment) {
+    case "production":
+      return { dir: "build" };
+    case "development":
+      return {
+        dir: "dev-build",
+        sourcemap: true,
+        entryFileNames: "[name].js",
+        chunkFileNames: "[name]-chunk.js",
+      };
+    default:
+      throw new Error(`Unknown environment: ${environment}`);
+  }
+}
+
+function getPlugins(environment) {
+  switch (environment) {
+    case "development":
+      return [
+        html({
+          input: "index.html",
+          publicPath: "..",
+        }),
+        ...COMMON_PLUGINS,
+        livereload(),
+        serve({
+          contentBase: "dev-build",
+          open: false,
+          historyApiFallback: true,
+        }),
+      ];
+    case "production":
+      return [
+        html({
+          input: "index.html",
+        }),
+        // Minify HTML template literals
+        minifyHTML(),
+        // Minify JS
+        terser({
+          ecma: 2020,
+          module: true,
+          warnings: true,
+        }),
+        ...COMMON_PLUGINS,
+      ];
+    default:
+      throw new Error(`Unknown environment: ${environment}`);
+  }
+}
 
 export default {
-  // Entry point for application build; can specify a glob to build multiple
-  // HTML files for non-SPA app
-  input: "index.html",
+  plugins: getPlugins(process.env.BUILD),
+  output: getOutputConfig(process.env.BUILD),
   onwarn: function (warning) {
     // Skip certain warnings
 
@@ -29,92 +103,5 @@ export default {
     // console.warn everything else
     console.warn(warning.message);
   },
-  plugins: [
-    htmlPlugin,
-    // Resolve bare module specifiers to relative paths
-    resolve(),
-    // Minify HTML template literals
-    minifyHTML(),
-    // Minify JS
-    terser({
-      module: true,
-      warnings: true,
-    }),
-    // Inject polyfills into HTML (core-js, regnerator-runtime, webcoponents,
-    // lit/polyfill-support) and dynamically loads modern vs. legacy builds
-    polyfillsLoader({
-      modernOutput: {
-        name: "modern",
-      },
-      // Feature detection for loading legacy bundles
-      legacyOutput: {
-        name: "legacy",
-        test: "!!Array.prototype.flat",
-        type: "systemjs",
-      },
-      // List of polyfills to inject (each has individual feature detection)
-      polyfills: {
-        hash: true,
-        coreJs: true,
-        regeneratorRuntime: true,
-        fetch: true,
-        webcomponents: true,
-        // Custom configuration for loading Lit's polyfill-support module,
-        // required for interfacing with the webcomponents polyfills
-        custom: [
-          {
-            name: "lit-polyfill-support",
-            path: "node_modules/lit/polyfill-support.js",
-            test: "!('attachShadow' in Element.prototype)",
-            module: false,
-          },
-        ],
-      },
-    }),
-    // Print bundle summary
-    summary(),
-    // Optional: copy any static assets to build directory
-    copy({
-      patterns: ["data/**/*", "images/**/*"],
-    }),
-  ],
-  // Specifies two JS output configurations, modern and legacy, which the HTML plugin will
-  // automatically choose between; the legacy build is compiled to ES5
-  // and SystemJS modules
-  output: [
-    {
-      // Modern JS bundles (no JS compilation, ES module output)
-      format: "esm",
-      chunkFileNames: "[name]-[hash].js",
-      entryFileNames: "[name]-[hash].js",
-      dir: "build",
-      plugins: [htmlPlugin.api.addOutput("modern")],
-    },
-    {
-      // Legacy JS bundles (ES5 compilation and SystemJS module output)
-      format: "esm",
-      chunkFileNames: "legacy-[name]-[hash].js",
-      entryFileNames: "legacy-[name]-[hash].js",
-      dir: "build",
-      plugins: [
-        htmlPlugin.api.addOutput("legacy"),
-        // Uses babel to compile JS to ES5 and modules to SystemJS
-        getBabelOutputPlugin({
-          compact: true,
-          presets: [
-            [
-              "@babel/preset-env",
-              {
-                targets: {
-                  ie: "11",
-                },
-                modules: "systemjs",
-              },
-            ],
-          ],
-        }),
-      ],
-    },
-  ],
-  preserveEntrySignatures: false,
+  preserveEntrySignatures: "strict",
 };
