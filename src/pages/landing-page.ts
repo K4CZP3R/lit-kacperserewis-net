@@ -3,17 +3,19 @@ import { customElement, property } from 'lit/decorators.js';
 import { connect } from 'pwa-helpers';
 
 import '../elements/button-element';
+// import '../elements/blob3d-element';
+// import '../elements/blob-element';
 import { store } from '../redux/store';
 
-import '../elements/blob-element';
-import '../elements/blob3d-element';
 import { appear, appearSlideUp, slideUp } from '../styles/animations.style';
 import { textStyle } from '../styles/text.style';
 import { animate } from '@lit-labs/motion';
 import { IReduxState } from '../models/redux-state.model';
 import { ISocialModel } from '../models/social.model';
-import { ILandingPageModel } from '../models/landing-page.model';
-import { LANDING_PAGE_CMS_RETRYIFY, SOCIALS_FETCH_RETRYIFY } from '../helpers/retryify';
+import { PAGE_FETCH_LANDING_RETRYIFY, SOCIALS_FETCH_RETRYIFY } from '../helpers/retryify';
+import { Logging } from '../services/logging.service';
+import { addToQueue } from '../redux/reducers/snackbar.reducer';
+import { IPageModel } from '../models/page.model';
 
 
 @customElement('landing-page')
@@ -27,13 +29,19 @@ export class LandingPage extends connect(store)(LitElement) {
     @property({ type: Boolean })
     changingBlob = false;
 
+    @property({type: Boolean})
+    blobLoaded = false;
+
 
     static override styles = [textStyle, appearSlideUp, slideUp, appear, css`
     .element {
         display: flex;
         align-items: center;
         justify-content: space-around;
-        /* animation: appearSlideUp 1s ease; */
+    }
+
+    .content {
+        display: flex; flex-direction: column;
     }
 
     blob3d-element {
@@ -41,9 +49,9 @@ export class LandingPage extends connect(store)(LitElement) {
     }
 
 
-    .main-text, .sub-text, .bot-text {
-        animation: appear 1s ease;
-    }
+     .main-text, .sub-text, .bot-text {
+         animation: appear 1s ease; 
+    } 
 
     .social-link {
         animation: appear 1s ease;
@@ -59,6 +67,8 @@ export class LandingPage extends connect(store)(LitElement) {
     }
 
 
+
+
     
 
 
@@ -66,9 +76,10 @@ export class LandingPage extends connect(store)(LitElement) {
         display: flex;
         gap: 10px;
         margin-top: 3%;
-        padding-left: 1%;
+        /* padding-left: 1%; */
         min-height: 40px;
         animation: appear 1s ease;
+        flex-wrap: wrap;
     }
     .socials > a {
         text-decoration: none;
@@ -83,6 +94,23 @@ export class LandingPage extends connect(store)(LitElement) {
             position: absolute;
             z-index: -1;
         }
+
+        .content {
+            align-items: center;
+        }
+
+        .socials {
+            /* display: none */
+            justify-content: space-evenly;
+        }
+
+        .sub-text {
+            display: none
+        }
+
+        .bot-text {
+        text-align: center;
+    }
     }
 
 
@@ -94,16 +122,48 @@ export class LandingPage extends connect(store)(LitElement) {
     socials: ISocialModel[] = [];
 
     @property({ type: Object })
-    landingPage?: ILandingPageModel;
+    landingPage?: IPageModel;
+
+    @property({type: Number})
+    blobColor?: number;
+    
+
+    constructor(){
+        super();
+        import('../elements/blob3d-element').then(() => this.blobLoaded = true);
+
+    }
 
     protected override firstUpdated(_changedProperties: PropertyValueMap<{[key:string]: unknown}> | Map<PropertyKey, unknown>): void {
         super.firstUpdated(_changedProperties);
 
 
 
-        SOCIALS_FETCH_RETRYIFY().start().then(() => console.log('fetched socials!')).catch((e) => console.log('socials error', e));
-        LANDING_PAGE_CMS_RETRYIFY().start().then(() => console.log('fetched cms!')).catch((e) => console.log('cms error', e));
+        SOCIALS_FETCH_RETRYIFY().start().then(() => console.log('fetched socials!')).catch(() => store.dispatch(addToQueue('Can\'t fetch social links.')));
+        PAGE_FETCH_LANDING_RETRYIFY().start().then(() => console.log('fetched cms!')).catch(() => store.dispatch(addToQueue('Can\'t fetch CMS content.')));
+        
 
+
+        window.addEventListener('resize', () => {
+            this.blobScreenWidthCheck();
+        });
+
+        this.blobScreenWidthCheck();
+
+        const blobColor = getComputedStyle(document.documentElement).getPropertyValue('--blob-color');
+        this.blobColor = Number(blobColor.toString().replace('#', '0x'));
+        Logging.log('Blob color is ' + this.blobColor);
+
+    }
+
+    blobScreenWidthCheck() {
+        if(this.changingBlob) return;
+
+        if(window.innerWidth < 768 && !this.simpleBlob) {
+            this.blobToggleTo(true);
+        } else if(window.innerWidth > 768 && this.simpleBlob) {
+            this.blobToggleTo(false);
+        }
     }
 
     override stateChanged(_state: IReduxState): void {
@@ -113,23 +173,39 @@ export class LandingPage extends connect(store)(LitElement) {
             this.socials = _state.socialsReducer.socials;
         }
 
-        // TODO: Check logic
-        if (!_state.landingPageReducer.error) {
-            this.landingPage = _state.landingPageReducer.landingPage;
-        }  
+
+        // TODO: Check logic!
+        const foundPage = _state.pageReducer.pages.find(p => p.pageId === 'landing-page');
+        if(foundPage) {
+            this.landingPage = foundPage;
+            // this.changingCms = true;
+            // setTimeout(() => {
+            //     this.landingPage = foundPage;
+            //     this.changingCms = false;
+            // }, 125);
+        }
         
 
 
 
     }
 
+
+    blobToggleTo(shouldBeSimple: boolean) {
+        this.changingBlob = true;
+
+        setTimeout(() => {
+            this.simpleBlob = shouldBeSimple;
+            this.changingBlob = false;
+        }, 125);
+    }
     blobClick() {
         this.changingBlob = true;
 
         setTimeout(() => {
             this.simpleBlob = !this.simpleBlob;
             this.changingBlob = false;
-        }, 500);
+        }, 125);
 
     }
 
@@ -141,30 +217,31 @@ export class LandingPage extends connect(store)(LitElement) {
         <div class="element">
         
 
-        ${this.landingPage ? html` <div style="display: flex; flex-direction: column;">
+        ${this.landingPage ? html` <div ${animate()} class="content">
 
-<a class="main-text testje">${this.landingPage?.mainText}</a>
-    <a class="sub-text testje">${this.landingPage?.subText}</a>
-    <a class="bot-text testje">${this.landingPage?.botText}</a>
+    <a class="main-text">${this.landingPage?.mainText}</a>
+    <a class="sub-text">${this.landingPage?.subText}</a>
+    <a class="bot-text">${this.landingPage?.botText}</a>
     
     <div class="socials">
-        ${['Projects', 'Blog', 'Projects/ts'].map((link: string) => {
-        return html`<a class="social-link" href="${link}">${link}</a>`;
+        ${['Projects', 'Blog'].map((link: string) => {
+        return html`<button-element class="social-link" .path="${link}">${link}</button-element>`;
     })}
         ${this.socials.map((social) => {
-        return html`<a class="social-link" href="${social.url}">${social.name}</a>`;
+        return html`<button-element class="social-link" .externalPath="${true}" .path="${social.url}">${social.name}</button-element>`;
     })}
-
-
-
     </div>
 
 
 
 </div>` : nothing}
            
-        
-            <blob3d-element .useSimpleMaterial="${this.simpleBlob}" class="${this.changingBlob ? 'hide-blob' : ''}" ${animate()} @click="${() => this.blobClick()}" blobSpeed="0.0003" lightColor="0xf6f6f2" size="300" blobColor="0xc2edce" blobSpikeness="1.75" ></blob3d-element>
+
+        ${this.blobLoaded ? 
+        html`<blob3d-element .useSimpleMaterial="${this.simpleBlob}" class="${this.changingBlob ? 'hide-blob' : ''}" ${animate()} @click="${() => this.blobClick()}" .blobSpeed="${0.0003}" .lightColor="${0xf6f6f2}" .size="${300}" .blobColor="${this.blobColor ?? 0xff0000}" .blobSpikeness="${1.75}" ></blob3d-element> ` : nothing}
+            
+            
+
         </div>
         
         `;

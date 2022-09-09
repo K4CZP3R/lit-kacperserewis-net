@@ -1,5 +1,5 @@
 import { fetchPosts } from '../redux/reducers/blog.reducer';
-import { fetchLandingPageCms } from '../redux/reducers/landing-page.reducer';
+import { fetchPage } from '../redux/reducers/page.reducer';
 import { fetchProjects } from '../redux/reducers/projects.reducer';
 import { fetchSocials } from '../redux/reducers/socials.reducer';
 import { store } from '../redux/store';
@@ -48,11 +48,11 @@ export function SOCIALS_FETCH_RETRYIFY(tries = 5, pauseBetween = 1000) {
     }, tries, pauseBetween);
 }
 
-export function LANDING_PAGE_CMS_RETRYIFY(tries = 5, pauseBetween = 1000) {
+export function PAGE_FETCH_LANDING_RETRYIFY(tries = 5, pauseBetween = 1000) {
     return new Retryify(async () => {
-        await store.dispatch(fetchLandingPageCms());
+        await store.dispatch(fetchPage('landing-page'));
     }, async () => {
-        return !store.getState().landingPageReducer.error;
+        return !store.getState().pageReducer.error;
     }, tries, pauseBetween);
 }
 

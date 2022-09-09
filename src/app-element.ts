@@ -1,35 +1,40 @@
-import type { PropertyValueMap } from 'lit';
+import {  PropertyValueMap } from 'lit';
 import { LitElement, html, css } from 'lit';
 import { customElement, property } from 'lit/decorators.js';
 
 import './elements/header-element';
 import './elements/footer-element';
 
-import { Router } from '@vaadin/router';
+import './pages/landing-page';
+
+ 
 import { connect } from 'pwa-helpers';
 import { store } from './redux/store';
 import { changeLocation, setMeta } from './redux/reducers/location.reducer';
 import type { IReduxState } from './models/redux-state.model';
 import { DependencyProviderService } from './services/dependency-provider.service';
 import type { IFetchService } from './services/interfaces/fetch.service.interface';
-import { FETCH_SERVICE, LANDING_PAGE_REPOSITORY, POST_REPOSITORY, PROJECTS_REPOSITORY, SOCIALS_REPOSITORY } from './helpers/di-names.helper';
+import { FETCH_SERVICE, PAGE_REPOSITORY, POST_REPOSITORY, PROJECTS_REPOSITORY, SOCIALS_REPOSITORY } from './helpers/di-names.helper';
 import { FetchOnlineService } from './services/fetch-online.service';
 import type { IProjectRepository } from './repositories/interfaces/project.repository.interface';
 import { ProjectApiRepository } from './repositories/project-api.repository';
 import type { ISocialRepository } from './repositories/interfaces/social.repository.interface';
 import { SocialApiRepository } from './repositories/social-api.repository';
-import type { ILandingPageRepository } from './repositories/interfaces/landing-page.repository.interface';
-import { LandingPageApiRepository } from './repositories/landing-page-api.repository';
 import { Logging } from './services/logging.service';
 import type { IPostRepository } from './repositories/interfaces/post.repository.interface';
 import { PostApiRepository } from './repositories/post-api.repository';
-
+import {  displayFromQueue, initializeElement } from './redux/reducers/snackbar.reducer';
+import { IPageRepository } from './repositories/interfaces/page.repository.interface';
+import { PageApiRepository } from './repositories/page-api.repository';
+import { appear } from './styles/animations.style';
+import { Router } from '@vaadin/router';
 @customElement('app-element')
 export class AppElement extends connect(store)(LitElement) {
     @property({ type: Object })
     router?: Router;
 
-    static override styles = css`
+
+    static override styles = [appear, css`
     .main-sections {
         display: flex;
         flex-direction: column;
@@ -40,8 +45,22 @@ export class AppElement extends connect(store)(LitElement) {
 
     }
 
+    #snackbar-container {
+        z-index: 1;
+        position: fixed;
+        bottom: 0;
+        display: flex;
+        flex-direction: column;
+        padding: 10px;
+        gap: 5px;
+    }
+
+    #first {
+        animation: appear 1s ease; 
+    }
+
     
-    `;
+    `];
 
     constructor() {
         super();
@@ -51,18 +70,33 @@ export class AppElement extends connect(store)(LitElement) {
         DependencyProviderService.setImpl<IFetchService>(FETCH_SERVICE, new FetchOnlineService());
         DependencyProviderService.setImpl<IProjectRepository>(PROJECTS_REPOSITORY, new ProjectApiRepository());
         DependencyProviderService.setImpl<ISocialRepository>(SOCIALS_REPOSITORY, new SocialApiRepository());
-        DependencyProviderService.setImpl<ILandingPageRepository>(LANDING_PAGE_REPOSITORY, new LandingPageApiRepository());
+        DependencyProviderService.setImpl<IPageRepository>(PAGE_REPOSITORY, new PageApiRepository());
         DependencyProviderService.setImpl<IPostRepository>(POST_REPOSITORY, new PostApiRepository());
+
+
     }
+
+    // private async importPage(func: Promise<any>): Promise<void> {
+    //     this.isImporting = true;
+    
+    //     await func.catch((e) =>{ Logging.log('Failed to import page!'), console.log(e);});
+    //     this.isImporting = false;
+    // }
 
     protected override firstUpdated(_changedProperties: PropertyValueMap<{[key:string]: unknown}> | Map<PropertyKey, unknown>): void {
         super.firstUpdated(_changedProperties);
+
         if(!this.shadowRoot) {
             Logging.log('Shadow root is null');
             return;
         }
-        this.router = new Router(this.shadowRoot.getElementById('outlet'));
 
+
+        
+
+
+        this.router = new Router(this.shadowRoot.getElementById('outlet'));
+        
         this.router.setRoutes([
             {
                 path: '/', component: 'landing-page', action: async () => {
@@ -90,6 +124,36 @@ export class AppElement extends connect(store)(LitElement) {
                 }
             },
         ]);
+
+
+        
+
+
+        
+
+
+
+        import('weightless/snackbar/show-snackbar').then((imported: any) => {
+            const showSnackbar = imported.showSnackbar;
+
+
+            const container = this.shadowRoot?.getElementById('snackbar-container');
+            if(!container) {
+                Logging.log('Can\'t get snackbar container!');
+                return;
+            }
+
+            store.dispatch(initializeElement(container, showSnackbar));
+
+
+        }).catch((e) => {
+            Logging.log('Failed to import snackbar', e);
+        });
+
+
+
+
+  
     }
 
     private onLocationChanged(newLocation: string, title: string, description: string) {
@@ -103,6 +167,13 @@ export class AppElement extends connect(store)(LitElement) {
         document.title = _state.locationReducer.title;
         document.querySelector('meta[name="description"]')?.setAttribute('content', _state.locationReducer.description);
         document.querySelector('meta[name="og:title"]')?.setAttribute('content', _state.locationReducer.description);
+
+        if(_state.snackbarReducer.queue.filter(f => !f.shown).length > 0) {
+            store.dispatch(displayFromQueue());
+        }
+
+
+
     }
 
     override connectedCallback() {
@@ -112,12 +183,15 @@ export class AppElement extends connect(store)(LitElement) {
     override render() {
         return html`
        
+       <div id="snackbar-container"></div>
         <div class="main-sections">
             <header-element class="header"> </header-element>
             <div id="outlet"></div>
             <footer-element class="footer"></footer-element>
         </div>
-        </div>
+       
+
+
         `;
     }
 }

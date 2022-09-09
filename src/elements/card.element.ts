@@ -7,9 +7,9 @@ import { textStyle } from '../styles/text.style';
 export class CardElement extends LitElement {
     static override styles = [textStyle, css`
     .element {
-        color: var(--primary-color);
-        background-color: var(--background-color);
-        border: 2px solid var(--primary-color);
+        color: var(--card-fg);
+        background-color: var(--card-bg);
+        border: 2px solid var(--card-fg);
         padding: 0px 25px 25px 25px;
         border-radius: 10px;
     }
